@@ -71,7 +71,9 @@ You have just created your very first page type. But wait, what about the V part
 
 # The ORM and Database Structure
 
-//++ @TODO need to cover this here since templates lesson is quite long and don't come back and explain it in the lesson after.
+@TODO 2018-03-07: this area needs expanding more
 
-- What ORM means in terms of the acornym and also for a developer
-- Look in the DB and how tables are structured, starting with SiteTree then Page, and then any child classes of page etc.
+* What ORM means in terms of the acronym and also for a developer of SilverStripe sites
+* Look in the DB and how tables are structured, starting with SiteTree then Page, and then any child classes of page etc.
+* Also look in the DB at DataObject tables
+* Joining table structure for different relations.

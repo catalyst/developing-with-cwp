@@ -169,6 +169,8 @@ There is also a lot more you can do in the templates, keep these in mind for lat
 
 # Overriding templates
 
-@TODO //++ Discuss template order and how you can override module and framework templates with your own to change layout etc.
+@TODO 2018-03-07: This topic needs expanding.
+
+How overriding templates works needs to be discussed as important to know how to override core and module templates for pages etc. For now more details are at the link below...
 
 https://docs.silverstripe.org/en/3/developer_guides/templates/template_inheritance/

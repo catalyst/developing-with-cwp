@@ -31,9 +31,9 @@ We will be spending a lot of time in this directory in this course, this is wher
 
 Things of note in the mysite directory are..
 
-* _config/config.yml
+* \_config/config.yml
 * code
-* _config.php
+* \_config.php
 
 The other directories and files in the mysite can be ignored as we will not need to alter them in this course.
 
@@ -54,10 +54,10 @@ git mv mysite/code/Page.php mysite/code/pagetypes/Page.php
 git commit
 git push
 ```
-# _config/config.yml
+# \_config/config.yml
 
 For now just note where this is. Some modules have configuration options which are set by a developer, if so you enter this here. This file will also be used in the advanced developer course when we come to do extensions.
 
-# _config.php
+# \_config.php
 
 This is another configuration file, as noted in the comment at the bottom, normally any SilverStripe config goes in the config.yml and not this file, however there are times when some PHP powered configuration is needed before the framework loads, for example this is why the SS_DATABASE_NAME etc is mentioned in this file.

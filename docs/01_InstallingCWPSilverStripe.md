@@ -6,21 +6,14 @@ Though the docs there seem a little out of date as the repositories have moved f
 
 # Prerequisites
 
-As detailed on the page there are some prerequisites such as having PHP, SQL database (such as mysql), and a web server like Apache2 to run the site. These should all be available on the machines in the training room.
+As detailed on the page there are some prerequisites such as having PHP, SQL database (such as mysql), and a web server like Apache2 to run the site. None of these are present on the training room computers so need to be installed.
 
-## //++ @TODO check what is on the training machines and what would need to be installed.
+Take a look at this website and follow the instructions to get Apache, PHP, and MySQL installed.
 
-* Apache?
-* MySQL?
-* PHP 5.6?
-* Atom?
-* MySQL workbench (or other DB browser)?
-* /var/www exists?
-* Users can alter /etc/apache2/sites-enabled?
-* Also /hosts file?
-* Also ensure I have an example of the config files needed so SilverStripe will run, as it can be a little tricky at times.
+https://www.vultr.com/docs/how-to-install-apache-mysql-and-php-on-ubuntu-16-04
 
-# Install process
+
+# SilverStripe Install process
 
 * Change into your web server's document root
 ```
@@ -33,7 +26,7 @@ composer create-project cwp/cwp-installer museum
 * Note: "museum" is the name of the site we are going to create in the command above, for your own sites in future use whatever name you desire for you project.
 * Choose Yes if it asks you about removing the repository history (it may not)
 * Change in to the directory: cd /museum
-* Create an _ss_environment.php file (touch _ss_environment.php on the command line will do this)
+* Create an \_ss_environment.php file (touch \_ss_environment.php on the command line will do this)
 * Add the following to the file (via Atom or your favourite editor)...
  * again "museum" is the name of the project in this case, for your other sites use the project name you have selected for that.
 
@@ -114,7 +107,7 @@ sudo service apache2 restart
 
 * Now you can visit the site in your browser: http://museum.local
 
-# Assets directory
+## Assets directory
 
 * In your browser add /dev/build to the url of your website
 * This causes the DB tables to be created (or any changes applied), it also creates some static files
@@ -131,23 +124,24 @@ sudo chmod 775 assets
 
 * Run /dev/build again from your browser, this time there should be no errors about an assets directory.
 
-# Ensure mod rewrite is enabled
+## Ensure mod rewrite is enabled
 
 The mod rewrite needs to be enabled for Apache, please run this command in your terminal..
 
 ```
 sudo a2enmod rewrite
+sudo service apache2 restart
 ```
 
-# Ready to go
+## Ready to go
 
 You should now be ready to go. Check by logging in to the admin section of your site by replacing /dev/build with /admin in the url, i.e. http://museum.local/admin.
-The user name should be "admin", with the password "password" - this is what was defined in the _ss_environment.php file.
+The user name should be "admin", with the password "password" - this is what was defined in the \_ss_environment.php file.
 
-# Notes and Tips
+## Notes and Tips
 
-* On a real server, available to others, such as for your QA and live sites, you would not normally have a default login in the _ss_environment.php file, and especially not admin/password. So ensure those 2 lines are not present in the file on your live site.
-* _ss_enviroment.php should not be checked in to source control, you would create this file on each server/environment where your website is deployed as the DB connection information will likely be different with a specific user and password for the database of the site (again not root/password either).
+* On a real server, available to others, such as for your QA and live sites, you would not normally have a default login in the \_ss_environment.php file, and especially not admin/password. So ensure those 2 lines are not present in the file on your live site.
+* \_ss_enviroment.php should not be checked in to source control, you would create this file on each server/environment where your website is deployed as the DB connection information will likely be different with a specific user and password for the database of the site (again not root/password either).
 * For additional security you can move the ss_environment.php up one level, out of the root directory of your site. SilverStripe is smart enough to find it there.
 
 # Your own repository
@@ -188,3 +182,20 @@ git push
 ```
 
 You should now have the base for the site we will create commited in to the github repo you created. If you go to the repository on Github in your browser you should now see a number of files.
+
+# Additional tools
+
+I recommend installing the additional things on your training room computer to assist with development.
+
+## Atom SilverStripe package
+
+Finally, we will be using the Atom editor for this course. In order for SilverStripe files to be syntax highlighted correctly, please install this package for Atom like so...
+
+* Edit -> Preferences
+* Choose + Install in the Preferences Dialog menu (upper-left)
+* Type "SilverStripe" in the search for packages
+* Install the atom-silverstripe package
+
+## MySQL Workbench
+
+In Ubuntu's Application Manager, search for MYSQL and install the "MySQL Workbench" application. This will allow you to easily see the database structure of SilverStripe sites, and perform lots of other functions such as querying data, running SQL statements etc.
