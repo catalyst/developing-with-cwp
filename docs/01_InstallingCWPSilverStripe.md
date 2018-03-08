@@ -8,16 +8,122 @@ Though the docs there seem a little out of date as the repositories have moved f
 
 As detailed on the page there are some prerequisites such as having PHP, SQL database (such as mysql), and a web server like Apache2 to run the site. None of these are present on the training room computers so need to be installed.
 
-Take a look at this website and follow the instructions to get Apache, PHP, and MySQL installed.
+## Apache
 
-https://www.vultr.com/docs/how-to-install-apache-mysql-and-php-on-ubuntu-16-04
+```
+sudo apt-get install apache2 -y
+```
 
+Apache should start automatically after its installed.
+
+### Ensure mod rewrite is enabled
+
+The mod rewrite needs to be enabled for Apache, please run this command in your terminal..
+
+```
+sudo a2enmod rewrite
+sudo service apache2 restart
+```
+
+And we also need to alter a couple of settings in the apache2 config so the re-write actually works for the SilverStripe site
+
+```
+sudo vim /etc/apache2/apache2.conf
+```
+
+Scroll down until you find the section of the file which contains security information for <Directory /var/www/> and update it to look like the below. We are allowing override.
+
+```
+<Directory /var/www/>
+        Options Indexes FollowSymLinks MultiViews
+        AllowOverride All
+        Order allow,deny
+        #Require all granted
+</Directory>
+```
+
+In Vim press i to enter edit mode, type your changes, then press Esc followed by :wq to write the changes and then quit vim.
+
+#### Quick Vim cheat sheet
+
+* i = enter edit mode
+* Esc = exit edit mode
+* :w = write changes
+* :q = quit
+* :wq = write then quit
+
+## MySQL
+
+```
+sudo apt-get install mysql-server -y
+```
+
+When it asks you to set a password for the root user, please use "password" for the password since these training room PCs are wiped after every training session. On a real set up, you should enter a strong password for the root mysql user.
+
+Also its always good practice to secure the mysql installation, so please run this command. Choose N when it asks if you would like to change the root password, otherwise enter Y(es) or press enter for the remaining questions.
+
+```
+sudo /usr/bin/mysql_secure_installation
+```
+
+## PHP 5.6
+
+Please run these commands to install PHP 5.6 and the PHP modules SilverStripe needs...
+
+```
+sudo add-apt-repository ppa:ondrej/php
+sudo apt-get update
+sudo apt-get install php7.0 php5.6 php5.6-mysql php-gettext php5.6-mbstring php-mbstring php7.0-mbstring php-xdebug libapache2-mod-php5.6 libapache2-mod-php7.0 php5.6-curl php5.6-xml
+```
+
+### Downgrade PHP version from PHP 7 to PHP 5.6
+
+At this time its best to run SilverStripe 3.x in PHP 5.6, it will not install and run on the latest PHP 7. To do this now please run these commands...
+
+```
+sudo a2dismod php7.0 ; sudo a2enmod php5.6 ; sudo service apache2 restart
+sudo update-alternatives --set php /usr/bin/php5.6
+```
+
+If desired you can run the following commands to confirm the installation (it will print out the directory were these are installed).
+
+For the php -v command this will print out the current version of PHP. Please ensure it says 5.6 and not 7.x
+
+```
+which apache2
+which mysql
+which php
+php -v
+```
+
+## Install Composer
+
+Composer is needed to install SilverStripe. So please install composer by running these commands...
+
+```
+sudo apt-get install curl php-cli php-mbstring git unzip
+cd ~
+curl -sS https://getcomposer.org/installer -o composer-setup.php
+sudo php composer-setup.php --install-dir=/usr/local/bin --filename=composer
+```
+
+Reference: https://poweruphosting.com/blog/install-composer-ubuntu/
+
+To check if the installation was successful, type "composer" in your terminal and press enter. Composer should output a list of options.
 
 # SilverStripe Install process
 
 * Change into your web server's document root
 ```
-cd /var/www
+cd /var
+```
+* Change the permissions of the www folder inside /var to be owned by 'train' which is the user you are logged in to the training room PCs as. This will eliminate any permission issues while trying to work inside the /var/www folder.
+```
+sudo chown train:www-data www -R
+```
+* Change in to the www directory
+```
+cd www
 ```
 * Create new project using Composer by running the following command
 ```
@@ -123,15 +229,6 @@ sudo chmod 775 assets
 ```
 
 * Run /dev/build again from your browser, this time there should be no errors about an assets directory.
-
-## Ensure mod rewrite is enabled
-
-The mod rewrite needs to be enabled for Apache, please run this command in your terminal..
-
-```
-sudo a2enmod rewrite
-sudo service apache2 restart
-```
 
 ## Ready to go
 
