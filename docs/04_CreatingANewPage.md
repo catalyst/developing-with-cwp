@@ -77,3 +77,12 @@ You have just created your very first page type. But wait, what about the V part
 * Look in the DB and how tables are structured, starting with SiteTree then Page, and then any child classes of page etc.
 * Also look in the DB at DataObject tables
 * Joining table structure for different relations.
+
+# Further reading/references
+
+* How to create pages in the CMS https://userhelp.silverstripe.org/en/3.6/creating_pages_and_content/pages/
+* SilverStripe ORM and data model https://docs.silverstripe.org/en/3/developer_guides/model/
+
+# Next
+
+[Lesson 05 - Creating a page Template](05_CreatingATemplate.md)

@@ -46,6 +46,7 @@ Time to create your own theme. We will base this off the starter theme, not the 
 
 * To create a new theme, if your code editor is Atom, you can right-click on the themes/starter and choose Duplicate
 * Then give it the name museum
+* Run the /dev/build command in your browser
 
 Congratulations you have just created a new theme. At the moment it looks exactly the same as the starter theme which is OK. We will make changes to the museum theme throughout the course.
 
@@ -114,13 +115,13 @@ Ensure the change is saved, now refresh the site in your browser. You may need t
 
 # Refresh Tip
 
-A little tip I have for you, which will make your development life so much easier, is to install an extension for your web browser which adds a button allowing you to fully refresh a page with one click. In Chrome I use an Extension called "Clear Cache".  This adds a button to the right of the address bar near the options menu which looks like a recycling symbol. I would suggest that you go and find it or something similar now so you can use it throughout this course.
+A little tip I have for you, which will make your development life so much easier, is to install an extension for your web browser which adds a button allowing you to fully refresh a page with one click. In Chrome I use an Extension called "Clear Cache".  This adds a button to the right of the address bar near the options menu which looks like a recycling symbol. I would suggest that you go and find it or something similar when doing SilverStripe development, particularly when there are CSS or JS changes.
 
 ![Clear Cache](img/03_clear-cache.png "Clear Cache")
 
-After installing the extension there is a little bit of configuration required, when it asks you just choose the "Cache" option under the list of Data to Remove. Also ensure the 'Automatically reload Active tab' option is ticked as yes we want the page to re-load after the cache is cleared.
+In our case, for this course, since we do very little in the way of CSS and no JavaScript it is not necessary to install clear cache or something similar. This is just something to bear in mind.
 
-![Clear Cache settings](img/03_clear-cache-settings.png "Clear Cache Settings")
+Also worth a mention is the Disable Cache option in the developer tools, this can also help with clearing cache, but will require you to open the dev tools and turn it on, and then its active for all page loads.
 
 
 # Adding and committing the colour change
@@ -138,3 +139,13 @@ Enter your commit message, such as "Added header background colour" and then Ctl
 ```
 git push
 ```
+
+# Further reading/references
+
+* SilverStripe add ons http://addons.silverstripe.org
+* Working with the starter theme https://www.cwp.govt.nz/developer-docs/en/1.7/working_with_projects/customising_the_starter_theme
+* Clear cache chrome extension https://chrome.google.com/webstore/detail/clear-cache/cppjkneekbjaeellbfkmgnhonkkjfpdn?hl=en
+
+# Next
+
+[Lesson 04 - Creating a new Page Type](04_CreatingANewPage.md)

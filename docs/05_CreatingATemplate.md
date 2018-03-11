@@ -174,3 +174,12 @@ There is also a lot more you can do in the templates, keep these in mind for lat
 How overriding templates works needs to be discussed as important to know how to override core and module templates for pages etc. For now more details are at the link below...
 
 https://docs.silverstripe.org/en/3/developer_guides/templates/template_inheritance/
+
+# Further reading/references
+
+* SilverStripe template syntax https://docs.silverstripe.org/en/3/developer_guides/templates/syntax/
+* Common template variables https://docs.silverstripe.org/en/3/developer_guides/templates/common_variables/
+
+# Next
+
+[Lesson 06 - Introduction to CMS fields](06_IntroToCMSFields.md)

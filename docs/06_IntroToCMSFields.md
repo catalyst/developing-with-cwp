@@ -98,3 +98,12 @@ Cases when a dev/build is not necessary (but not limited to)...
 Well done! This concludes the lessons on how to create a page type in SilverStripe; you created all three parts of the MVC - with the Page (model) class, the page_controller, and also the template view for it. Also you learnt how to add fields in to the CMS for content authors to enter information.
 
 Pages are a very big and important part of SilverStripe sites, you will be creating and extending pages and their templates a lot as a SilverStripe developer.
+
+# Further reading/references
+
+* SilverStripe data model types https://docs.silverstripe.org/en/3/developer_guides/model/data_types_and_casting/
+* SilverStripe Form field types https://docs.silverstripe.org/en/3/developer_guides/forms/field_types/
+
+# Next
+
+[Lesson 07 - Installing a Module](07_InstallingAModule.md)

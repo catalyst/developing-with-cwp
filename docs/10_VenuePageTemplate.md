@@ -111,3 +111,14 @@ One thing to point out with the template code is the line ${$Cost}. Use the curl
 ![Venue Template Output](img/10_venue-template.png "Venue Template Output")
 
 If you have not done so already, ensure that changes to all the files are saved, run /dev/build and enter the capacity and cost of the venues in your site. Also you should add, commit, and push your code changes to Github.
+
+# Further reading/references
+
+* SilverStripe template syntax https://docs.silverstripe.org/en/3/developer_guides/templates/syntax/
+* Common template variables https://docs.silverstripe.org/en/3/developer_guides/templates/common_variables/
+* SilverStripe data model types https://docs.silverstripe.org/en/3/developer_guides/model/data_types_and_casting/
+* SilverStripe Form field types https://docs.silverstripe.org/en/3/developer_guides/forms/field_types/
+
+# Next
+
+[Lesson 11 - Creating forms - Venue Booking](11_VenueBookingForm.md)

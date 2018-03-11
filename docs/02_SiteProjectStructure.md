@@ -45,7 +45,7 @@ Lets prepare the mysite/code directory for the upcoming lessons in this course, 
 * models
 * pagetypes
 
-Then on the command line issue these commands to move the HomePage.php and Page.php files in to the pagetypes directory in a way that Git knows about..
+Then on the command line, from the root directory of the museum site, issue these commands to move the HomePage.php and Page.php files in to the pagetypes directory in a way that Git knows about..
 
 ```
 git mv mysite/code/HomePage.php mysite/code/pagetypes/HomePage.php
@@ -54,6 +54,13 @@ git mv mysite/code/Page.php mysite/code/pagetypes/Page.php
 git commit
 git push
 ```
+
+Now we need to dev/build the SilverStripe site so SilverStripe updates its information about where the files are so the site still works in your web browser. Add /dev/build to the base url of your website in a web browser.
+
+```
+http://museum.local/dev/build
+```
+
 # \_config/config.yml
 
 For now just note where this is. Some modules have configuration options which are set by a developer, if so you enter this here. This file will also be used in the advanced developer course when we come to do extensions.
@@ -61,3 +68,12 @@ For now just note where this is. Some modules have configuration options which a
 # \_config.php
 
 This is another configuration file, as noted in the comment at the bottom, normally any SilverStripe config goes in the config.yml and not this file, however there are times when some PHP powered configuration is needed before the framework loads, for example this is why the SS_DATABASE_NAME etc is mentioned in this file.
+
+# Further reading/references
+
+* SilverStripe developer docs https://docs.silverstripe.org/en/3/
+* SilverStripe configuration https://docs.silverstripe.org/en/3/developer_guides/configuration/
+
+# Next
+
+[Lesson 03 - Creating a Theme](03_CreatingATheme.md)

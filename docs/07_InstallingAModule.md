@@ -107,3 +107,13 @@ So in this lesson we have really done 2 things
 
 * 1) is find and install a module to provide additional functionality to SilverStripe, and
 * 2) add some validation to fields in the SilverStripe CMS. Remember that as well as modules themes can be found via the http://addons.silverstripe.org
+
+# Further reading/references
+
+* SilverStripe add ons http://addons.silverstripe.org/
+* Modules dev docs https://docs.silverstripe.org/en/3/developer_guides/extending/modules/
+* Zen Validator Github https://github.com/sheadawson/silverstripe-zenvalidator
+
+# Next
+
+[Lesson 08 - Creating a DataObject](docs/08_CreatingADataobject.md)

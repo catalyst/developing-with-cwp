@@ -54,10 +54,12 @@ Students should have some experience with PHP, HTML, and CSS. Experience with Gi
 
 ## Lesson Index
 
+These are the lessons for the course (in the docs folder). Throughout the lessons we we be building a small Museum website to get hands-on experience developing in SilverStripe.
+
 * [Installing CWP SilverStripe](docs/01_InstallingCWPSilverStripe.md)
 * [Project Structure](docs/02_SiteProjectStructure.md)
 * [Creating a Theme](docs/03_CreatingATheme.md)
-* [Creating a new Page](docs/04_CreatingANewPage.md)
+* [Creating a new Page Type](docs/04_CreatingANewPage.md)
 * [Creating a page Template](docs/05_CreatingATemplate.md)
 * [Introduction to CMS fields](docs/06_IntroToCMSFields.md)
 * [Installing a Module](docs/07_InstallingAModule.md)

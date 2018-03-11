@@ -186,3 +186,12 @@ public function getCMSFields()
 ```
 
 There is a great module called "gridfield extensions" see https://github.com/symbiote/silverstripe-gridfieldextensions which contains a number of useful components for gridfields you can use. I particularly like the GridFieldAddExistingSearchButton which gives a much more advanced and I believe user friendly way of linking existing items. We won't use that here, but you might want to check out this module at some point.
+
+# Further reading/references
+
+* Relations between records https://docs.silverstripe.org/en/3/developer_guides/model/relations/
+* Gridfields https://docs.silverstripe.org/en/3/developer_guides/forms/field_types/gridfield/
+
+# Next
+
+[Lesson 10 - Venue page Template](10_VenuePageTemplate.md)

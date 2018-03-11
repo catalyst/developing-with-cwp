@@ -118,3 +118,12 @@ We created a lot in this lesson, you should do a git status on the command line 
 If you have a few data objects which are related you can use the same Model Admin to manage them - you may have noticed that in the code above the $managed_models property is an array. In this case the model admin screen adds a tab for each model to the initial screen so you can choose between data objects / models to manage. Also in this case you can give the admin a more general $menu_title and $url_segment.
 
 You don't have to have a model admin for your data objects. If they are quite closely tied to a particular page you can add a GridField to that page allowing for CRUD of model records there.
+
+# Further reading/references
+
+* SilverStripe Data model and ORM https://docs.silverstripe.org/en/3/developer_guides/model/data_model_and_orm/
+* Model admins https://docs.silverstripe.org/en/3/developer_guides/customising_the_admin_interface/modeladmin/
+
+# Next
+
+[Lesson 09 - Creating another page - Venues](09_CreatingTheVenuePage.md)

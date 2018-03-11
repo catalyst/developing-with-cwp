@@ -2,7 +2,7 @@
 
 To install the CWP version of SilverStripe its best to check the CWP page for instructions on how to do this. This page can be found here: https://www.cwp.govt.nz/developer-docs/en/1.8/getting_started/
 
-Though the docs there seem a little out of date as the repositories have moved from Gitlab to Github, so follow the instructions below.
+Though the docs there seem a little out of date as the repositories have moved from Gitlab to Github, so follow the instructions below to set up SilverStripe on your training room computer.
 
 # Prerequisites
 
@@ -38,7 +38,7 @@ Scroll down until you find the section of the file which contains security infor
         Options Indexes FollowSymLinks MultiViews
         AllowOverride All
         Order allow,deny
-        #Require all granted
+        Require all granted
 </Directory>
 ```
 
@@ -73,8 +73,10 @@ Please run these commands to install PHP 5.6 and the PHP modules SilverStripe ne
 ```
 sudo add-apt-repository ppa:ondrej/php
 sudo apt-get update
-sudo apt-get install php7.0 php5.6 php5.6-mysql php-gettext php5.6-mbstring php-mbstring php7.0-mbstring php-xdebug libapache2-mod-php5.6 libapache2-mod-php7.0 php5.6-curl php5.6-xml
+sudo apt-get install php7.0 php5.6 php5.6-mysql php-gettext php5.6-mbstring php-mbstring php7.0-mbstring php-xdebug libapache2-mod-php5.6 libapache2-mod-php7.0 php5.6-curl php5.6-xml php5.6-mcrypt
 ```
+
+Note that a WARNING may output in the terminal, its OK to ignore this.
 
 ### Downgrade PHP version from PHP 7 to PHP 5.6
 
@@ -98,7 +100,7 @@ php -v
 
 ## Install Composer
 
-Composer is needed to install SilverStripe. So please install composer by running these commands...
+Composer is needed to install SilverStripe. So please install composer by running these commands. If you get any RED coloured errors in the terminal please STOP at this point and let your instructor know. Its best to resolve any issues with the composer install at this time, otherwise you may need to repeat some of the steps below.
 
 ```
 sudo apt-get install curl php-cli php-mbstring git unzip
@@ -131,7 +133,7 @@ composer create-project cwp/cwp-installer museum
 ```
 * Note: "museum" is the name of the site we are going to create in the command above, for your own sites in future use whatever name you desire for you project.
 * Choose Yes if it asks you about removing the repository history (it may not)
-* Change in to the directory: cd /museum
+* Change in to the directory: cd museum
 * Create an \_ss_environment.php file (touch \_ss_environment.php on the command line will do this)
 * Add the following to the file (via Atom or your favourite editor)...
  * again "museum" is the name of the project in this case, for your other sites use the project name you have selected for that.
@@ -241,7 +243,7 @@ The user name should be "admin", with the password "password" - this is what was
 * \_ss_enviroment.php should not be checked in to source control, you would create this file on each server/environment where your website is deployed as the DB connection information will likely be different with a specific user and password for the database of the site (again not root/password either).
 * For additional security you can move the ss_environment.php up one level, out of the root directory of your site. SilverStripe is smart enough to find it there.
 
-# Your own repository
+# GIT repository for the site we will build
 
 You need somewhere to save the work done on the site created throughout the day. I recommend you use Github for this as pushing to a repository on Github means you have an off-pc backup of the site you can refer to in future.
 
@@ -296,3 +298,19 @@ Finally, we will be using the Atom editor for this course. In order for SilverSt
 ## MySQL Workbench
 
 In Ubuntu's Application Manager, search for MYSQL and install the "MySQL Workbench" application. This will allow you to easily see the database structure of SilverStripe sites, and perform lots of other functions such as querying data, running SQL statements etc.
+
+You can create a connection to the mysql server on your local machine in MySQL workbench by clicking the little (+) icon to the right of the MySQL Connections title.
+
+All you should need to do is give it a name, by default the parameters are to localhost. Click "Test Connection" then OK. It will create a card under the MySQL connections which you can then click to connect to the local database. The password you enter is for the root user, this is the same password you entered when setting up MySQL - it should be just "password".
+
+# Further reading/references
+
+* CWP getting started https://www.cwp.govt.nz/developer-docs/en/1.8/getting_started/
+* Interactive Vim tutorial http://www.openvim.com/
+* Downgrading PHP on Ubuntu https://askubuntu.com/questions/761713/how-can-i-downgrade-from-php-7-to-php-5-6-on-ubuntu-16-04
+* Atom: install packages https://flight-manual.atom.io/using-atom/sections/atom-packages/
+* MySQL workbench https://www.mysql.com/products/workbench/
+
+# Next
+
+[Lesson 02 - Project Structure](02_SiteProjectStructure.md)
