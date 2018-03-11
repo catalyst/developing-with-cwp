@@ -116,4 +116,4 @@ So in this lesson we have really done 2 things
 
 # Next
 
-[Lesson 08 - Creating a DataObject](docs/08_CreatingADataobject.md)
+[Lesson 08 - Creating a DataObject](08_CreatingADataobject.md)
