@@ -71,17 +71,107 @@ You have just created your very first page type. But wait, what about the V part
 
 # The ORM and Database Structure
 
-@TODO 2018-03-07: this area needs expanding more
+## ORM
 
-* What ORM means in terms of the acronym and also for a developer of SilverStripe sites
-* Look in the DB and how tables are structured, starting with SiteTree then Page, and then any child classes of page etc.
-* Also look in the DB at DataObject tables
-* Joining table structure for different relations.
+SilverStripe uses an ORM system for the database, ORM stands for Object Relational Model, and from a development perspective this means you create objects in code such as pages and other dataobjects and SilverStripe will take care of creating the Database tables for them. As a developer you don't have to design and create DB tables when using SilverStripe.
+
+Also the ORM system means that as a developer, you can write pretty high level code to create, read, update, delete (CRUD) your pages and other dataobjects rather than needing to write raw SQL or build sql queries using "Active Record" style syntax (though both these of these methods are available if needed).
+
+For example to retrieve a DataList of all landing pages ordered by Title somewhere in your code you can simply do as follows
+
+```php
+$pages = LandingPage::get()->sort('Title');
+```
+
+And to retrieve and update a record you can do you like this
+
+```php
+$facility = Facility::get()->byID(2);
+$facility->Title = 'Barbecue';
+$facility->write();
+```
+
+The SilverStripe docs have this very succinct explanation of what the SilverStripe ORM means
+
+* Each database table maps to a PHP class
+* Each database row maps to a PHP object
+* Each database column maps to a property on a PHP object
+
+Because SilverStripe creates and maintains the database structure, this is why its necessary to run dev/build after creating, removing, or altering a class or its properties so the DB tables and columns stay in sync with what is defined in the code.
+
+The benefits of using the ORM are that as well as it making your development quicker and easier, it allows other code to hook in to different events (example: onBeforeWrite), and means its pretty easy to change the database your site runs on since SilverStripe takes care of writing the actual SQL statements.
+
+## dev/build
+
+You can run the dev/build task by visiting the base url of your site with /dev/build added on the end while logged in to the CMS as an administrator. For example http://museum.local/dev/build
+
+The task compares the current database to the classes defined in code and will perform the following changes if necessary
+
+* Create any missing tables
+* Create any missing fields
+* Create any missing indexes
+* Alter the field type of any existing fields
+* Rename any obsolete tables that it previously created to obsolete(tablename)
+
+A couple few important things to note is that the task won't delete tables or delete columns from tables no longer used. It will also ignore any tables it does not recognise so long as the names of those tables don't match that of a SilverStripe class.
+
+### When to dev/build?
+
+Cases when you need to dev/build are...
+* You have created a new PHP code file, such as a new Pagetype
+* You have made any changed which will affect the database such as adding or removing fields from the $db, $has_one, and some other arrays.
+* You have created (or removed) a template file
+* Changes to the config.yml file
+* After installing a new module
+
+Cases when a dev/build is not necessary (but not limited to)...
+* Altering CMS fields in the getCMSFields() function
+* Altering the HTML structure in an existing template file
+* JavaScript or CSS changes
+
+A simple refresh of the page should be sufficient in these cases, when there are JS or CSS changes a hard refresh (CTL-F5) might be needed.
+
+## Table structure in the SilverStripe database
+
+Now lets have a look at the table structure in a SilverStripe database. This is where the MySQL workbench application you should have installed earlier will come in handy.
+
+### General
+
+Many tables have an auto-incremented ID column, and auto populated Created, and LastEdited datetime fields.
+
+### SiteTree
+
+In terms of the page structure of the site, the most important table here is called SiteTree.
+
+Site tree contains all the basic info about the page records, including the UrlSegment, Title, Content, Sort, ParentID and so forth.
+
+You may also notice it contains a column called ClassName. This is because no matter the page type, a record will be created in the SiteTree table when a user adds a page via the CMS.
+
+If you select * from the table to list all records (right-click the table in MySQL workbench and choose "Select Rows"), you should see a number of records with various class names: Page, ErrorPage, HomePage, and if you added a Landing Page in the CMS a record with the ClassName of LandingPage.
+
+Another important thing to keep in mind about SiteTree and Pages you create is that SilverStripe will only create a new table for your page type if you have specified an additional field for that page type.
+
+It will create a 1 to 1 relation between this new table and site tree, then when querying to get all the information about this table it will join the 2 tables together.
+
+Just like pages defined in PHP subclass the Page class and you can specify new properties and methods in your child class, in the database, SilverStripe kind of does inheritance too with the "child" tables only containing the new columns.
+
+At this stage because we did not add any new fields to the LandingPage class we created, no LandingPage table in the DB has been created. All the information about the LandingPage can be contained in the SiteTree table.
+
+## DataObjects
+
+The same system of "inheritance" can apply to Dataobjects as well, where if you have a child class of a dataobject you created, a child table will only contain the new fields.
+
+Note with DataObjects there is no common table like there is with pages and the SiteTree table.
+
+## More details
+
+We will look at the database more throughout this course as we create Dataobjects, relations, and more CMS fields. The SilverStripe docs linked below contain heaps of information about the ORM.
 
 # Further reading/references
 
 * How to create pages in the CMS https://userhelp.silverstripe.org/en/3.6/creating_pages_and_content/pages/
 * SilverStripe ORM and data model https://docs.silverstripe.org/en/3/developer_guides/model/
+* Intro the ORM https://docs.silverstripe.org/en/3/developer_guides/model/data_model_and_orm/
 
 # Next
 

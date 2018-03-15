@@ -144,6 +144,7 @@ git push
 
 * SilverStripe add ons http://addons.silverstripe.org
 * Working with the starter theme https://www.cwp.govt.nz/developer-docs/en/1.7/working_with_projects/customising_the_starter_theme
+* Slightly older 'default' theme https://github.com/silverstripe/cwp-theme-default (I think it looks nicer)
 * Clear cache chrome extension https://chrome.google.com/webstore/detail/clear-cache/cppjkneekbjaeellbfkmgnhonkkjfpdn?hl=en
 
 # Next

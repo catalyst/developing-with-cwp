@@ -78,21 +78,6 @@ Now lets use this new Intro field in the template as a plain text field is bette
 
 Now visit the Attractions landing page in the front-end of you website. You might have noted that I did not say you needed to dev/build, that's because you do not; you can make changes to existing templates and they will appear after refresh without dev/build(ing). The intro you entered for the child pages will now be output.
 
-# TIP - when to dev/build & when this not needed
-
-Cases when you need to dev/build (but not limited just to these)...
-* You have created a new PHP code file, such as a new Pagetype
-* You have made any changed which will affect the database such as adding or removing fields from the $db, $has_one, and some other arrays.
-* You have created (or removed) a template file
-* Changes to the config.yml file
-* After installing a new module
-
-Cases when a dev/build is not necessary (but not limited to)...
-* Altering CMS fields in the getCMSFields() function
-* Altering the HTML structure in an existing template file
-* JavaScript or CSS changes
-* A simple refresh of the page should be sufficient, when there are JS or CSS changes a hard refresh (ctl-F5) might be needed.
-
 # Summary
 
 Well done! This concludes the lessons on how to create a page type in SilverStripe; you created all three parts of the MVC - with the Page (model) class, the page_controller, and also the template view for it. Also you learnt how to add fields in to the CMS for content authors to enter information.
