@@ -4,7 +4,7 @@ You need somewhere to save the work done on the site created throughout the day.
 
 If you don't want to create a Github repository for the site you will build during the course then the site can be copied to a USB key before leaving at the end of the day. If you don't have your own USB key, one might be able to be provided - please check with your instructor at this time.
 
-Some of you will be familiar with Github, others not so much, but its pretty easy to use. Please create an account on <a href="http://github.com" target="\_blank">http://github.com</a> if you don't already have one and then create a repository to push code changes to throughout the day.
+Some of you will be familiar with Github, others not so much, but its pretty easy to use. Please create an account on <a href="http://github.com" target="_blank">http://github.com</a> if you don't already have one and then create a repository to push code changes to throughout the day.
 
 * Create repository on Github, perhaps the name is training-museum
 * Git init in the root of the site on the command line
