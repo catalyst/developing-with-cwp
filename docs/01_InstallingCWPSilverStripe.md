@@ -1,6 +1,6 @@
 # Installing CWP SilverStripe
 
-To install the CWP version of SilverStripe its best to check the CWP page for instructions on how to do this. This page can be found here: https://www.cwp.govt.nz/developer-docs/en/1.8/getting_started/
+To install the CWP version of SilverStripe its best to check the CWP page for instructions on how to do this. This page can be found here: <a href="https://www.cwp.govt.nz/developer-docs/en/1.8/getting_started/" target="\_blank">https://www.cwp.govt.nz/developer-docs/en/1.8/getting_started/</a>
 
 Though the docs there seem a little out of date as the repositories have moved from Gitlab to Github, so follow the instructions below to set up SilverStripe on your training room computer.
 
@@ -8,22 +8,15 @@ Though the docs there seem a little out of date as the repositories have moved f
 
 As detailed on the page there are some prerequisites such as having PHP, SQL database (such as mysql), and a web server like Apache2 to run the site. None of these are present on the training room computers so need to be installed.
 
-## Apache
+## Install Apache and enable mod rewrite
 
 ```
 sudo apt-get install apache2 -y
-```
-
-Apache should start automatically after its installed.
-
-### Ensure mod rewrite is enabled
-
-The mod rewrite needs to be enabled for Apache, please run this command in your terminal..
-
-```
 sudo a2enmod rewrite
 sudo service apache2 restart
 ```
+
+Apache should start automatically after its installed.
 
 And we also need to alter a couple of settings in the apache2 config so the re-write actually works for the SilverStripe site
 
@@ -45,6 +38,8 @@ Scroll down until you find the section of the file which contains security infor
 In Vim press i to enter edit mode, type your changes, then press Esc followed by :wq to write the changes and then quit vim.
 
 #### Quick Vim cheat sheet
+
+These are some VIM commands you need to know, remember this is here as you may need to refer to it below.
 
 * i = enter edit mode
 * Esc = exit edit mode
@@ -73,7 +68,7 @@ Please run these commands to install PHP 5.6 and the PHP modules SilverStripe ne
 ```
 sudo add-apt-repository ppa:ondrej/php
 sudo apt-get update
-sudo apt-get install php7.0 php5.6 php5.6-mysql php-gettext php5.6-mbstring php-mbstring php7.0-mbstring php-xdebug libapache2-mod-php5.6 libapache2-mod-php7.0 php5.6-curl php5.6-xml php5.6-mcrypt
+sudo apt-get install php7.0 php5.6 php5.6-mysql php-gettext php5.6-mbstring php-mbstring php7.0-mbstring php-xdebug libapache2-mod-php5.6 libapache2-mod-php7.0 php5.6-curl php5.6-xml php5.6-mcrypt php5.6-gd
 ```
 
 Note that a WARNING may output in the terminal, its OK to ignore this.
@@ -109,7 +104,7 @@ curl -sS https://getcomposer.org/installer -o composer-setup.php
 sudo php composer-setup.php --install-dir=/usr/local/bin --filename=composer
 ```
 
-Reference: https://poweruphosting.com/blog/install-composer-ubuntu/
+Reference: <a href="https://poweruphosting.com/blog/install-composer-ubuntu/" target="\_blank">https://poweruphosting.com/blog/install-composer-ubuntu/</a>
 
 To check if the installation was successful, type "composer" in your terminal and press enter. Composer should output a list of options.
 
@@ -133,8 +128,14 @@ composer create-project cwp/cwp-installer museum
 ```
 * Note: "museum" is the name of the site we are going to create in the command above, for your own sites in future use whatever name you desire for you project.
 * Choose Yes if it asks you about removing the repository history (it may not)
-* Change in to the directory: cd museum
-* Create an \_ss_environment.php file (touch \_ss_environment.php on the command line will do this)
+* Change in to the directory
+```
+cd museum
+```
+* Create an \_ss_environment.php file using the touch command (creates an empty file of the name you specify)
+```
+touch _ss_environment.php
+```
 * Add the following to the file (via Atom or your favourite editor)...
  * again "museum" is the name of the project in this case, for your other sites use the project name you have selected for that.
 
@@ -160,18 +161,18 @@ $_FILE_TO_URL_MAPPING['/var/www/museum'] = 'http://museum.local';
 ```
 
 * Next create a configuration file in the apache/sites-enabled for this site
-* cd /etc/apache2/sites-enabled
+```
+cd /etc/apache2/sites-enabled
+```
 * create a file with the name of your website, i.e. museum.conf
  * Must have the .conf extension
-* Then open the file
-
+ * Then open the file
 ```
 sudo touch museum.conf
 sudo vim museum.conf
 ```
 
 * Add the following to this file...
-
 ```
 <VirtualHost *:80>
         # The ServerName directive
@@ -194,26 +195,26 @@ sudo vim museum.conf
 </VirtualHost>
 ```
 
-* Save this file and exit.
+* Save this file and exit by doing the following...
  * Press Esc
  * Then type :wq and press enter
 * Now edit your hosts file
-
 ```
 sudo vim /etc/hosts
 ```
-
-* Add this: 127.0.1.1  museum.local
+* Add this to the file below the other entries, ensure there is a Tab between in the 127.0.1.1 and the url of the site "museum.local"
+```
+127.0.1.1   museum.local
+```
 * Save and exit
  * Press Esc
  * Type :wq and press enter
 * Finally re-start apache
-
 ```
 sudo service apache2 restart
 ```
 
-* Now you can visit the site in your browser: http://museum.local
+* Now you can visit the site in your browser: <a href="http://museum.local" target="\_blank">http://museum.local</a>
 
 ## Assets directory
 
@@ -221,10 +222,12 @@ sudo service apache2 restart
 * This causes the DB tables to be created (or any changes applied), it also creates some static files
 * Scroll down and you may see some errors, these will be because the assets directory does not exist or does not have the correct permissions
 * In the directory of your site in the terminal, do an ls to see all the directories to check if an assets directory exists
- * Create if needed with: mkdir assets
+ * Create if needed with...
+```
+ mkdir assets
+```
 * The owner-group and permissions of the assets directory need to be a certain way so run these commands...
  * The username on the training computers is "train", other computers your username will be different.
-
 ```
 sudo chown train:www-data assets
 sudo chmod 775 assets
@@ -234,8 +237,8 @@ sudo chmod 775 assets
 
 ## Ready to go
 
-You should now be ready to go. Check by logging in to the admin section of your site by replacing /dev/build with /admin in the url, i.e. http://museum.local/admin.
-The user name should be "admin", with the password "password" - this is what was defined in the \_ss_environment.php file.
+You should now be ready to go. Check by logging in to the admin section of your site by replacing /dev/build with /admin in the url, i.e.
+<a href="http://museum.local/admin" target="\_blank">http://museum.local/admin</a>. The user name should be "admin", with the password "password" - this is what was defined in the \_ss_environment.php file.
 
 ## Notes and Tips
 
@@ -243,46 +246,7 @@ The user name should be "admin", with the password "password" - this is what was
 * \_ss_enviroment.php should not be checked in to source control, you would create this file on each server/environment where your website is deployed as the DB connection information will likely be different with a specific user and password for the database of the site (again not root/password either).
 * For additional security you can move the ss_environment.php up one level, out of the root directory of your site. SilverStripe is smart enough to find it there.
 
-# GIT repository for the site we will build
-
-You need somewhere to save the work done on the site created throughout the day. I recommend you use Github for this as pushing to a repository on Github means you have an off-pc backup of the site you can refer to in future.
-
-Some of you will be familiar with Github, others not so much, but its pretty easy to use. Please create an account on http://github.com if you don't already have one and then create a repository to push code changes to throughout the day.
-
-* Create repository on Github, perhaps the name is training-museum
-* Git init in the root of the site on the command line
-
-```
-git init
-```
-
-* Add a remote to the github repository you created. The link needed below can be found by clicking the Green "clone or download" button and copying the HTTPS link...
-
-```
-git remote add origin <repo link>
-```
-
-* Add all files
-
-```
-git add .
-```
-
-* Do an initial commit
-
-```
-git commit -m "Initial Commit"
-```
-
-* Do the first push
-
-```
-git push
-```
-
-You should now have the base for the site we will create commited in to the github repo you created. If you go to the repository on Github in your browser you should now see a number of files.
-
-# Additional tools
+# Additional tools to help with development
 
 I recommend installing the additional things on your training room computer to assist with development.
 
@@ -305,12 +269,12 @@ All you should need to do is give it a name, by default the parameters are to lo
 
 # Further reading/references
 
-* CWP getting started https://www.cwp.govt.nz/developer-docs/en/1.8/getting_started/
-* Interactive Vim tutorial http://www.openvim.com/
-* Downgrading PHP on Ubuntu https://askubuntu.com/questions/761713/how-can-i-downgrade-from-php-7-to-php-5-6-on-ubuntu-16-04
-* Atom: install packages https://flight-manual.atom.io/using-atom/sections/atom-packages/
-* MySQL workbench https://www.mysql.com/products/workbench/
+* CWP getting started <a href="https://www.cwp.govt.nz/developer-docs/en/1.8/getting_started/" target="\_blank">https://www.cwp.govt.nz/developer-docs/en/1.8/getting_started/</a>
+* Interactive Vim tutorial <a href="http://www.openvim.com/" target="\_blank">http://www.openvim.com/</a>
+* Downgrading PHP on Ubuntu <a href="https://askubuntu.com/questions/761713/how-can-i-downgrade-from-php-7-to-php-5-6-on-ubuntu-16-04" target="\_blank">https://askubuntu.com/questions/761713/how-can-i-downgrade-from-php-7-to-php-5-6-on-ubuntu-16-04</a>
+* Atom: install packages <a href="https://flight-manual.atom.io/using-atom/sections/atom-packages/" target="\_blank">https://flight-manual.atom.io/using-atom/sections/atom-packages/</a>
+* MySQL workbench <a href="https://www.mysql.com/products/workbench/" target="\_blank">https://www.mysql.com/products/workbench/</a>
 
 # Next
 
-[Lesson 02 - Project Structure](02_SiteProjectStructure.md)
+[Lesson 01b - Git Repo](01b_GitRepo.md)

@@ -55,6 +55,8 @@ git commit
 git push
 ```
 
+If not using Git then you can just click, drag and drop, the 2 files in to the pagetypes folder in Atom to move them.
+
 Now we need to dev/build the SilverStripe site so SilverStripe updates its information about where the files are so the site still works in your web browser. Add /dev/build to the base url of your website in a web browser.
 
 ```
