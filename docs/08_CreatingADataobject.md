@@ -12,9 +12,7 @@ For example, in this lesson we are going to create a Data Object for Venue Facil
 
 # Lets get started
 
-OK lets get started. In the Atom editor go to the mysite/code directory and right-click, choose "Create new folder" and call it "models". Note the use of the word models for the folder name and not dataobjects, that is because the classes we create are turned in to database tables by SilverStripe ORM when we dev/build - i.e. they create the (M)odel part of the MVC system.
-
-Now right-click on the models folder and create a new file, call it Facility.php. Note the use of the singular term Facility not Facilities. It is convention in programming to use singular names Objects and database tables and actually makes sense if you wanted to create a new facility object in code as the following line creates a new instance of ONE Facility object, not multiple (don't add this to the file).
+OK lets get started. In the Atom editor go to the mysite/code directory and right-click on the models folder (you should have created this earlier, if not then create the folder too) and create a new file, call it Facility.php. Note the use of the singular term Facility not Facilities. It is convention in programming to use singular names Objects and database tables and actually makes sense if you wanted to create a new facility object in code as the following line creates a new instance of ONE Facility object, not multiple (don't add this to the file).
 
 ```php
 $barbecue = new Facility();
@@ -74,9 +72,7 @@ At present if you go to the CMS and look for your facility dataobject you won't 
 
 Now, If you would like a place in the CMS for particular data objects to be viewed, created, updated etc which transcends pages, you can provide this by creating a Model Admin. As the name suggests this feature provides an Admin for our Models. We will create one of these now so we can create some Facility records for use later once we link them up to new VenuePage.
 
-* In atom right-click on the mysite/code directory and choose to create a new folder
-* Call it "admins"
-* Now right-click on the admins folder and choose new file
+* In mysite/code directory, right-click on the admins folder and choose new file
 * Call it FacilityAdmin.php
 * Add the code below to this file...
 

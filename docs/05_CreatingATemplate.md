@@ -29,8 +29,8 @@ For example on the landing page, as well as the Content entered in the TinyMCE e
 
 So lets create the template file. This is where the themes directory and the copy of the standard theme you created earlier comes in to play.
 
-* Go in to the themes/museum/templates/Layout direcotry
-* Create a new file (in Atom right-click on the Layout folder and choose 'New file'
+* Go in to the themes/museum/templates/Layout directory
+* Create a new file (in Atom right-click on the Layout folder and choose 'New file')
 * Call it LandingPage.ss
 * Its very important the filename matches the name of the PHP class you want the template to be for, if the names do not match then the template will not be detected or used for the page.
 
@@ -127,7 +127,7 @@ As expected you can test if something equals or does not equal a condition, but 
 
 ```html
 // Equals
-<% if $TimePeriod == '7Days %>
+<% if $TimePeriod == '7Days' %>
    <p>7 day data</p>
 <% end_if %>
 
