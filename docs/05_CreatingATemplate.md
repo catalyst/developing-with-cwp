@@ -172,28 +172,7 @@ How overriding templates works needs to be discussed as important to know how to
 https://docs.silverstripe.org/en/4/developer_guides/templates/template_inheritance/
 
 
-## Adding Data fields to your template
-
-Open Layout/LandingPage.ss. Add the following before the `<% loop Children %>` segment of your template:
-```html
-<div class="container-fluid">
-  <div class="row">
-    <div class="col">
-      $Content
-    </div>
-  </div>
-
-  <% if SpecialContentHeadline && SpecialContent %>
-    <h3>$SpecialContentHeadline</h3>
-    <div>$SpecialContent</div>
-    <hr />
-    <p class="text-center">$CurrentDateTime</p>
-  <% end_if %>
-</div>
-```
-Refresh the page - you probably don't see anything. That's because we haven't built our new database columns or added any data yet!  
-
-In our next section, we will learn how to add some database fields to our Landing Page, and modify them using the CMS using some particular fields. We will also learn what a "Getter" method is and how they work.
+In our next section, we will learn how to add some database fields to our Landing Page, including those inherited from a parent Page class. We will update these database fields using the CMS. We will also learn what a "Getter" method is and how they work.
 
 ## Further reading/references
 

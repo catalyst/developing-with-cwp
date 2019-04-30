@@ -59,9 +59,72 @@ The last line of the function returns the $fields array to the code which called
 
 Do a dev/build and then reload one of the Attractions pages, you should now see a field to enter an intro. Please do so for each of the attraction child pages, Saving and Publishing as in the next bit we will go back and alter the Landing page template file.
 
+## Updating LandingPage.php
+In the previous step, we added an Intro field to the Page object. Now let's open LandingPage.php and add some more database fields specifically for the LandingPage:
+
+Add two new fields to your $db array:
+```php
+private static $db = [
+  'SpecialContentHeadline' => "Varchar(64)",
+  "SpecialContent" => "HTMLText"
+];
+```
+
+### Add some new CMS fields to a tab
+To insert new CMS fields for us to edit, we need to define a method and get the fields from the parent class. We will then add a field called a _ToggleCompositeField_, to contain our new fields, and add them to a new Tab on the HomePage record:
+```php
+public function getCMSFields() {
+  $fields = parent::getCMSFields();
+
+  $fields->addFieldToTab(
+    'Root.SpecialContent',
+    ToggleCompositeField::create(
+      'SpecialContentFieldArea', [
+        TextField::create('SpecialContentHeadline'),
+        HTMLEditorField::create('SpecialContent')
+      ]
+    )
+  );
+
+  return $fields;
+}
+```
+
+This is an excellent example of inheritance in action: LandingPage::getCMSFields obtains fields from Page::getCMSFields and injects its own set of fields into the result. This means that LandingPage automatically receives the "Intro" field without any additional development on our part.
+
+Tip:  You'll need to add some `use` statements to the top of your class for PHP to recognise the classname:
+```php
+use SilverStripe\Forms\HTMLEditor\HTMLEditorField;
+use SilverStripe\Forms\TextField;
+use SilverStripe\Forms\ToggleCompositeField;
+```
+
+Do a `dev/build?flush=` and open your LandingPage in the CMS.  You will now see three new fields:
+* Intro, which was inherited from Page.php
+* A new tab called "Special Content"
+* In "Special Content", a single ToggleCompositeField, which reveals two new fields once clicked:
+    * A TextField called "Special Content Headline"
+    * A WYSIWYG editor called "Special Content"
+
+
+
+### Make a getter method
+Inside our special content area, we want to display the current date and time at the bottom of the section. This is not database content - it's some other arbitrary data that we can query from any source and display the result. We can do this by defining a _getter method_, which can be summoned from the HomePage template and and class that descends from it:
+
+```php
+public function getCurrentDateTime()
+{
+  return DBDatetime::now();
+}
+```
+
+Getters are commonly use to fetch the result from something not defined in the database, such as the output of a cached API request.
+
+Here, we will use it to fetch the current date and time from the database server.
+
 ## Updating LandingPage.ss
 
-Now lets use this new Intro field in the template as a plain text field is better to use for the intro rather than limiting the characters of the Content which can be a problem is there is HTML formatting such as bold, images, links etc in the first part of the content. In LandingPage.ss change this line in the loop of $Children $Content.LimitCharacters(50) to $Intro, so
+Now lets use this new Intro field and our landing in the template as a plain text field is better to use for the intro rather than limiting the characters of the Content which can be a problem is there is HTML formatting such as bold, images, links etc in the first part of the content. In Layout/LandingPage.ss change this line in the loop of $Children $Content.LimitCharacters(50) to $Intro, so
 
 ```html
 <% loop $Children %>
@@ -76,7 +139,32 @@ Now lets use this new Intro field in the template as a plain text field is bette
 <% end_loop %>
 ```
 
+Also in Layout/LandingPage.ss, add the following before the `<% loop Children %>` segment of your template:
+```html
+<div class="container-fluid">
+  <div class="row">
+    <div class="col">
+      $Content
+    </div>
+  </div>
+
+  <% if SpecialContentHeadline && SpecialContent %>
+    <h3>$SpecialContentHeadline</h3>
+    <div>$SpecialContent</div>
+    <hr />
+    <p class="text-center">$CurrentDateTime</p>
+  <% end_if %>
+</div>
+```
+
+
 Now visit the Attractions landing page in the front-end of you website. You might have noted that I did not say you needed to dev/build, that's because you do not; you can make changes to existing templates and they will appear after refresh without dev/build(ing). The intro you entered for the child pages will now be output.
+
+If you have not entered anything in the SpecialContentHeadline **and** the SpecialContent fields, you will not see any special content or the timestamp.
+
+You'll note the timestamp shows a very detailed version of the current time. Because this is the output of the DBDatetime class, all of its public methods are available for use within the template. To only show the four-digit year, for example, use `$CurrentDateTime.Format('yyyy')` instead. More information on the possible accepted formats is here: http://userguide.icu-project.org/formatparse/datetime.  Save this URL... you'll use it a lot!
+
+Note that CurrentDateTime is an alias of `getCurrentDateTime`. `get` is typically optional, but often preferred to distingush it from your database fields. It can also be used to overload the value retrieved from the database.
 
 # Summary
 
@@ -84,10 +172,12 @@ Well done! This concludes the lessons on how to create a page type in SilverStri
 
 Pages are a very big and important part of SilverStripe sites, you will be creating and extending pages and their templates a lot as a SilverStripe developer.
 
+We've learned what a DataObject is, and that a page type is a type of DataObject.  We've learned about the ORM and how to use it. We've seen how to utilise special variables on our DataObject to set up relationships with other data, and what possible relationships exist. Finally, we've learned how to inherit fields from parent pages in the CMS, how to set up getter utility methods, and how to display all of these new concepts on a template for your users to see.
+
 # Further reading/references
 
-* SilverStripe data model types https://docs.silverstripe.org/en/3/developer_guides/model/data_types_and_casting/
-* SilverStripe Form field types https://docs.silverstripe.org/en/3/developer_guides/forms/field_types/
+* SilverStripe data model types https://docs.silverstripe.org/en/4/developer_guides/model/data_types_and_casting/
+* SilverStripe Form field types https://docs.silverstripe.org/en/4/developer_guides/forms/field_types/
 
 # Next
 
