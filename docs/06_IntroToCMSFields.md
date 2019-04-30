@@ -55,8 +55,6 @@ The last parameter of the addFieldToTab 'Content' simply tells the CMS to put th
 
 The last line of the function returns the $fields array to the code which called it. This will be code inside the SilverStripe cms folder in the root directory of your site. At this point the $fields array will contain all the fields from the parent classes plus the TextareaField we added to the main tab before the Content field.
 
-![Intro field](img/06_intro-cms-field.png "Intro field")
-
 Do a dev/build and then reload one of the Attractions pages, you should now see a field to enter an intro. Please do so for each of the attraction child pages, Saving and Publishing as in the next bit we will go back and alter the Landing page template file.
 
 ## Updating LandingPage.php
