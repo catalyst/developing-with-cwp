@@ -201,11 +201,11 @@ class ManagedEmail extends DataObject
 
     private static $summary_fields = ['Label', 'Subject'];
 
-    public function send($toAddress)
+    public function send()
     {
         $email = Email::create();
-        $email->addTo($toAddress);
-        $email->addFrom($FromAddress);
+        $email->addTo($this->ToAddress);
+        $email->addFrom($this->FromAddress);
         $email->Subject = $this->Subject;
         $email->Body = $this->Body;
 
