@@ -1,280 +1,289 @@
 # Installing CWP SilverStripe
 
-To install the CWP version of SilverStripe its best to check the CWP page for instructions on how to do this. This page can be found here: <a href="https://www.cwp.govt.nz/developer-docs/en/1.8/getting_started/" target="\_blank">https://www.cwp.govt.nz/developer-docs/en/1.8/getting_started/</a>
+To install the CWP version of SilverStripe its best to check the CWP page for instructions on how to do this. This page can be found here: <a href="https://www.cwp.govt.nz/developer-docs/en/2/getting_started/" target="\_blank">https://www.cwp.govt.nz/developer-docs/en/2/getting_started/</a>
 
-Though the docs there seem a little out of date as the repositories have moved from Gitlab to Github, so follow the instructions below to set up SilverStripe on your training room computer.
-
-# Prerequisites
+## Prerequisites
 
 As detailed on the page there are some prerequisites such as having PHP, SQL database (such as mysql), and a web server like Apache2 to run the site. None of these are present on the training room computers so need to be installed.
 
-## Install Apache and enable mod rewrite
+### You need to install PHP, Apache, and MySQL
 
+[This is an excellent guide](https://www.digitalocean.com/community/tutorials/how-to-install-linux-apache-mysql-php-lamp-stack-on-ubuntu-16-04). Note that this is not the exact same environment as CWP, but it works very well for development.
+
+#### Apache
+
+On CWP, Nginx is used as a proxy for requests to Apache. This is not applicable in a dev environment but something to be aware of. We will not install nginx here.
 ```
-sudo apt-get install apache2 -y
+    sudo apt-get update
+    sudo apt-get install apache2
+```
+
+#### mod_rewrite
+
+SilverStripe requires mod_rewrite.  Activate it with Apache:
+```
 sudo a2enmod rewrite
 sudo service apache2 restart
 ```
 
-Apache should start automatically after its installed.
+#### PHP
 
-And we also need to alter a couple of settings in the apache2 config so the re-write actually works for the SilverStripe site
+Our training environment will PHP 7.0. Ideally you should install PHP 7.1 for CWP. Alternatively, you can develop on a Vagrant or docker instance.
 
+* Install PHP and its dependencies
 ```
-sudo vim /etc/apache2/apache2.conf
-```
-
-Scroll down until you find the section of the file which contains security information for <Directory /var/www/> and update it to look like the below. We are allowing override.
-
-```
-<Directory /var/www/>
-        Options Indexes FollowSymLinks MultiViews
-        AllowOverride All
-        Order allow,deny
-        Require all granted
-</Directory>
+#core dependencies
+sudo apt-get install php php-curl php-gd php-mbstring php-mcrypt php-tidy php-intl php-mysql php-xml php-dom php-zip unzip libapache2-mod-php
+#developer tools
+sudo apt-get install php-xdebug php-cli
 ```
 
-In Vim press i to enter edit mode, type your changes, then press Esc followed by :wq to write the changes and then quit vim.
+#### Composer
 
-#### Quick Vim cheat sheet
+Installing the CWP codebase is almost always done with composer. It is the easiest way to install the project from scratch and start developing. This is also how the CWP Dashboard deploys new versions of your website. 
 
-These are some VIM commands you need to know, remember this is here as you may need to refer to it below.
+Other tools, such as FabricDeploy or PHP Deployer, make use of composer to build the project first then upload the result to a server. 
 
-* i = enter edit mode
-* Esc = exit edit mode
-* :w = write changes
-* :q = quit
-* :wq = write then quit
-
-## MySQL
-
+[Download instructures here](https://getcomposer.org/download/) or run this script:
 ```
-sudo apt-get install mysql-server -y
+EXPECTED_SIGNATURE="$(wget -q -O - https://composer.github.io/installer.sig)"
+php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"
+ACTUAL_SIGNATURE="$(php -r "echo hash_file('sha384', 'composer-setup.php');")"
+
+if [ "$EXPECTED_SIGNATURE" != "$ACTUAL_SIGNATURE" ]
+then
+    >&2 echo 'ERROR: Invalid installer signature'
+    rm composer-setup.php
+    exit 1
+fi
+
+php composer-setup.php --quiet
+RESULT=$?
+rm composer-setup.php
+sudo mv composer.phar /usr/local/bin/composer
 ```
-
-When it asks you to set a password for the root user, please use "password" for the password since these training room PCs are wiped after every training session. On a real set up, you should enter a strong password for the root mysql user.
-
-Also its always good practice to secure the mysql installation, so please run this command. Choose N when it asks if you would like to change the root password, otherwise enter Y(es) or press enter for the remaining questions.
-
-```
-sudo /usr/bin/mysql_secure_installation
-```
-
-## PHP 5.6
-
-Please run these commands to install PHP 5.6 and the PHP modules SilverStripe needs...
-
-```
-sudo add-apt-repository ppa:ondrej/php
-sudo apt-get update
-sudo apt-get install php7.0 php5.6 php5.6-mysql php-gettext php5.6-mbstring php-mbstring php7.0-mbstring php-xdebug libapache2-mod-php5.6 libapache2-mod-php7.0 php5.6-curl php5.6-xml php5.6-mcrypt php5.6-gd
-```
-
-Note that a WARNING may output in the terminal, its OK to ignore this.
-
-### Downgrade PHP version from PHP 7 to PHP 5.6
-
-At this time its best to run SilverStripe 3.x in PHP 5.6, it will not install and run on the latest PHP 7. To do this now please run these commands...
-
-```
-sudo a2dismod php7.0 ; sudo a2enmod php5.6 ; sudo service apache2 restart
-sudo update-alternatives --set php /usr/bin/php5.6
-```
-
-If desired you can run the following commands to confirm the installation (it will print out the directory were these are installed).
-
-For the php -v command this will print out the current version of PHP. Please ensure it says 5.6 and not 7.x
-
-```
-which apache2
-which mysql
-which php
-php -v
-```
-
-## Install Composer
-
-Composer is needed to install SilverStripe. So please install composer by running these commands. If you get any RED coloured errors in the terminal please STOP at this point and let your instructor know. Its best to resolve any issues with the composer install at this time, otherwise you may need to repeat some of the steps below.
-
-```
-sudo apt-get install curl php-cli php-mbstring git unzip
-cd ~
-curl -sS https://getcomposer.org/installer -o composer-setup.php
-sudo php composer-setup.php --install-dir=/usr/local/bin --filename=composer
-```
-
-Reference: <a href="https://poweruphosting.com/blog/install-composer-ubuntu/" target="\_blank">https://poweruphosting.com/blog/install-composer-ubuntu/</a>
 
 To check if the installation was successful, type "composer" in your terminal and press enter. Composer should output a list of options.
 
-# SilverStripe Install process
+#### Git
 
-* Change into your web server's document root
+Composer and the CWP service both depend on `git clone` to work. It should be installed on Ubuntu already, but if it is not then run this command:
 ```
-cd /var
-```
-* Change the permissions of the www folder inside /var to be owned by 'train' which is the user you are logged in to the training room PCs as. This will eliminate any permission issues while trying to work inside the /var/www folder.
-```
-sudo chown train:www-data www -R
-```
-* Change in to the www directory
-```
-cd www
-```
-* Create new project using Composer by running the following command
-```
-composer create-project cwp/cwp-installer museum
-```
-* Note: "museum" is the name of the site we are going to create in the command above, for your own sites in future use whatever name you desire for you project.
-* Choose Yes if it asks you about removing the repository history (it may not)
-* Change in to the directory
-```
-cd museum
-```
-* Create an \_ss_environment.php file using the touch command (creates an empty file of the name you specify)
-```
-touch _ss_environment.php
-```
-* Add the following to the file (via Atom or your favourite editor)...
- * again "museum" is the name of the project in this case, for your other sites use the project name you have selected for that.
-
-```php
-<?php
-
-/* What kind of environment is this: development, test, or live (ie, production)? */
-define('SS_ENVIRONMENT_TYPE', 'dev');
-
-/* Database connection */
-define('SS_DATABASE_SERVER', 'localhost');
-define('SS_DATABASE_USERNAME', 'root');
-define('SS_DATABASE_PASSWORD', 'password');
-define('SS_DATABASE_NAME', 'museum');
-
-define('SS_DEFAULT_ADMIN_USERNAME', 'admin');
-define('SS_DEFAULT_ADMIN_PASSWORD', 'password');
-
-global $_FILE_TO_URL_MAPPING;
-$_FILE_TO_URL_MAPPING[realpath($_SERVER['DOCUMENT_ROOT'])] = 'http://museum.local';
-$_FILE_TO_URL_MAPPING['/var/www/museum'] = 'http://museum.local';
-
+sudo apt-get install git
 ```
 
-* Next create a configuration file in the apache/sites-enabled for this site
-```
-cd /etc/apache2/sites-enabled
-```
-* create a file with the name of your website, i.e. museum.conf
- * Must have the .conf extension
- * Then open the file
-```
-sudo touch museum.conf
-sudo vim museum.conf
-```
+#### MySQL
 
-* Add the following to this file...
+* MySQL can (and should) be installed on a different instance for performance reasons. There's no harm in running the webserver and the DB on the same machine.
+
+The CWP service uses MariaDB, which is a more open version of MySQL. There are very few observable differences, and MySQL is fine for development.
+
+```
+sudo apt-get install mysql-server
+mysql_secure_installation
+```
+Set a root password.
+* [?] Optionally use `VALIDATE PASSWORD PLUGIN` if you intend to set up other users. 
+* [N] Don't change root password, we just set it.
+* [Y] Remove anonymous users
+* [Y] Disallow root remotely, this is a development machine.
+* [Y] Remove test database and access.
+* [Y] Reload privilege tables
+
+### Configuring your virtualhost
+
+On Ubuntu, we will add a new virtualhost to /etc/apache2/sites-available/mysite.localhost.conf
+
 ```
 <VirtualHost *:80>
-        # The ServerName directive
-        ServerName museum.local
+	ServerName mysite.localhost
+    
+    #if working with subsites, uncomment and add subdomains here
+	#ServerAlias subdomain.mysite.localhost
 
-        ServerAdmin webmaster@localhost
-        DocumentRoot /var/www/museum
+	ServerAdmin elliotsawyer@catalyst.net.nz
+    #note the "public" folder is the docroot.
+    #We will install the CWP project in this location. 
+    #Don't worry if it doesn't exist yet
+    #Your docroot and directory may not match mine. 
+	DocumentRoot /home/ubuntu/mysite/public
 
-        <Directory //var/www/museum/>
-                Options Indexes FollowSymLinks MultiViews
-                AllowOverride All
-                Order allow,deny
-                allow from all
-        </Directory>
+	<Directory /home/ubuntu/mysite/public>
+		Options Indexes FollowSymLinks MultiViews
+		AllowOverride All
+		Require all granted
+	</Directory>
 
-        #LogLevel info ssl:warn
-
-        ErrorLog ${APACHE_LOG_DIR}/error.log
-        CustomLog ${APACHE_LOG_DIR}/access.log combined
+	
+	ErrorLog ${APACHE_LOG_DIR}/error.log
+	CustomLog ${APACHE_LOG_DIR}/access.log combined
 </VirtualHost>
 ```
 
-* Save this file and exit by doing the following...
- * Press Esc
- * Then type :wq and press enter
-* Now edit your hosts file
+Enable your site. Ignore warnings about the docroot
 ```
-sudo vim /etc/hosts
-```
-* Add this to the file below the other entries, ensure there is a Tab between in the 127.0.1.1 and the url of the site "museum.local"
-```
-127.0.1.1   museum.local
-```
-* Save and exit
- * Press Esc
- * Type :wq and press enter
-* Finally re-start apache
-```
+sudo a2ensite mysite.localhost
 sudo service apache2 restart
 ```
 
-* Now you can visit the site in your browser: <a href="http://museum.local" target="\_blank">http://museum.local</a>
+### /etc/hosts
 
-## Assets directory
-
-* In your browser add /dev/build to the url of your website
-* This causes the DB tables to be created (or any changes applied), it also creates some static files
-* Scroll down and you may see some errors, these will be because the assets directory does not exist or does not have the correct permissions
-* In the directory of your site in the terminal, do an ls to see all the directories to check if an assets directory exists
- * Create if needed with...
 ```
- mkdir assets
-```
-* The owner-group and permissions of the assets directory need to be a certain way so run these commands...
- * The username on the training computers is "train", other computers your username will be different.
-```
-sudo chown train:www-data assets
-sudo chmod 775 assets
+#add this to the end of the file:
+#this should match your ServerName
+127.0.0.1   mysite.localhost
 ```
 
-* Run /dev/build again from your browser, this time there should be no errors about an assets directory.
+### Update Apache
 
-## Ready to go
+Change priority of index.php to be left-most in `/etc/apache2/mods-enabled/dir.conf`
+```
+<IfModule mod_dir.c>
+    DirectoryIndex index.php index.html index.cgi index.pl index.xhtml index.htm
+</IfModule>
+```
+Restart apache
 
-You should now be ready to go. Check by logging in to the admin section of your site by replacing /dev/build with /admin in the url, i.e.
-<a href="http://museum.local/admin" target="\_blank">http://museum.local/admin</a>. The user name should be "admin", with the password "password" - this is what was defined in the \_ss_environment.php file.
+#### Other tips:
+Don't do this in a production environment!
+
+* Change your Apache User and Group to run as your local user (i.e. ubuntu)
+    * Update /etc/apache2/apache.conf
+    * Replace `User ${APACHE_RUN_USER}` with `User ubuntu`
+    * Replace `Group ${APACHE_RUN_GROUP}` with `Group ubuntu`
+    * Restart apache
+
+### Test your setup
+
+```
+mkdir -p ~/mysite/public
+echo "<?=phpinfo()?>" >> ~/mysite/public/x.php
+```
+
+Delete this before proceding with your CWP setup
+```
+rm -rf mysite
+```
+
+## Create your CWP project
+
+Assuming all your installation requirements are met, installing the CWP project can be done with a single command:
+```
+cd ~
+composer create-project cwp/cwp-installer mysite ^2
+```
+
+This will take a while to run (~10 minutes)
+
+### What's happening here
+
+* We're using composer to install CWP
+* `create-project` pulls a Github repository commonly known as a "recipe"
+* `cwp/cwp-installer` is the name of this recipe
+* `^2` means "install the most recent stable version of major release 2"
+
+### Folder structure
+SilverStripe is modular - every piece of code you write is considered to be a module, including the contents of your `app` folder. 
+```
+mysite
+    app
+    public
+    themes
+        yourtheme
+        watea
+        starter
+    vendor
+    .env
+```
+### app
+The "app" folder contains all of your PHP code and project-specific templates. You'll define any custom pagetypes, models, dataextensions, YML config, and other project-specific stuff in here. **Never** modify modules in the `vendor` folder directly, unless you're pushing changes back to a version controlled project.
+
+
+#### public
+The "public" folder contains all publicly visible assets. This includes documents and images uploaded into the CMS, as well as symlinks to the JS, CSS, imagery, and other assets that are whitelisted by your theme. You will never need to edit anything yourself in this folder. 
+
+SilverStripe serves all requests to the web from the /public folder. All other parts of your codebase are protected from the webserver, which does not require direct publicly-accessible access to them. This is also where the CMS `assets` folder places files uploaded from the CMS.
+
+This entire folder should be readable by the webserver user.
+
+#### themes
+The "themes" folder is where your front-end theme (or multiple themes) will live. Your theme will "expose" JS, CSS, and other files to the public folder. Your site can use a single theme, or it can use multiple themes which "cascade" down to a base theme. 
+
+You'll specify a theme in app/_config/theme.yml. In CWP there's currently one loaded by default:
+
+```
+---
+Name: cwptheme
+---
+SilverStripe\View\SSViewer:
+  themes:
+    - '$public'
+    - 'starter'
+    - '$default'
+```
+
+`$public` and `$default` are special cases of the theme loader that need to be included for historical reasons. Everything in the `themes` folder is symlinked to `public`, which contains public resources such as CSS, JS, and other web assets like fonts. . `$public` serves as a special type of theme that will take precedence over all others.
+
+`$default` is a fallback theme that all `framework` controllers use to render a skeleton layout
+
+#### vendor
+The CWP installer will set up your entire SilverStripe project for you. All required projects are installed to the `vendor` folder and (usually) never need to be modified by the developer. 
+
+
+### .env file
+
+If you have used previous versions of SilverStripe, you may be familiar with the _ss_environment.php file included with dev projects. This has been replaced with .env text file for SilverStripe 4.
+
+Create a `.env` with the following content:
+```
+SS_ENVIRONMENT_TYPE="dev"
+SS_DATABASE_SERVER="localhost"
+SS_DATABASE_NAME="mysite"
+SS_DATABASE_USERNAME="root"
+SS_DATABASE_PASSWORD="YourRootPassword"
+SS_DEFAULT_ADMIN_USERNAME="administrator"
+SS_DEFAULT_ADMIN_PASSWORD="TestTest!!!!!!!!"
+```
+
+SS_DEFAULT_ADMIN_USERNAME and SS_DEFAULT_ADMIN_PASSWORD create a default administrator user, which you can use to access the CMS for the first time. This should be disabled once you have created an account with a valid email address.
+
+Don't forget to set SS_ENVIRONMENT_TYPE="dev" when you first install. It defaults to "live", which supresses all frontend website errors until changed.
+
+## Building your database
+Run the following command from your `mysite` folder:
+`vendor/bin/sake dev/build flush=`
+
+You can also visit `http://mysite.localhost/dev/build?flush=` in a web browser. This may require an administrator login.
+
+## Conclusion
+At this point, you should have CWP installed with a very basic theme, which is known as the "starter" theme. You can use this theme as a basis for your own custom frontend development, or you can install a new theme and build on top of it. We'll cover this more in a future slide
+
+## Saving your work
+The CWP project includes a .gitignore file for files that don't need to be tracked, as well as some sensible defaults for .editorconfig and test suites. 
+
+Now would be a prudent time to create an "initial commit" to your git repository and push it to the remote repository for safekeeping. Make a note of the clone URL for your git repository, it might look like this: 
+* git@github.com:you/installing-silverstripe.git
+* https://github.com/you/installing-silverstripe.git
+
+```
+git remote origin add https://github.com/you/installing-silverstripe.git
+git add .
+git commit -nM 'Intial commit'
+git push -u origin master
+```
 
 ## Notes and Tips
 
-* On a real server, available to others, such as for your QA and live sites, you would not normally have a default login in the \_ss_environment.php file, and especially not admin/password. So ensure those 2 lines are not present in the file on your live site.
-* \_ss_enviroment.php should not be checked in to source control, you would create this file on each server/environment where your website is deployed as the DB connection information will likely be different with a specific user and password for the database of the site (again not root/password either).
-* For additional security you can move the ss_environment.php up one level, out of the root directory of your site. SilverStripe is smart enough to find it there.
+* On a real server, available to others, such as for your QA and live sites, you would not normally have a default login in the .env file, and especially not admin/pass. So ensure those 2 lines are not present in the file on your live site.
+* .env should not be checked in to source control, you would create this file on each server/environment where your website is deployed as the DB connection information will likely be different with a specific user and password for the database of the site (again not root/password either).
+* .env should only be used when the site is in `dev` mode. In a production environment, these should be set as system environment variables instead. You can do this with SetEnv in your apache virtualhost.
 
-# Additional tools to help with development
+## Further reading/references
 
-I recommend installing the additional things on your training room computer to assist with development.
+* CWP getting started <a href="https://www.cwp.govt.nz/developer-docs/en/2/getting_started/" target="\_blank">https://www.cwp.govt.nz/developer-docs/en/2/getting_started/</a>
 
-## Atom SilverStripe package
 
-Finally, we will be using the Atom editor for this course. In order for SilverStripe files to be syntax highlighted correctly, please install this package for Atom like so...
+## What's next?
+In our next topic, we will show you how to install an already-existing CWP theme, so you don't have to build one for scratch (don't worry, we'll do that too!).
 
-* Edit -> Preferences
-* Choose + Install in the Preferences Dialog menu (upper-left)
-* Type "SilverStripe" in the search for packages
-* Install the atom-silverstripe package
-
-## MySQL Workbench
-
-In Ubuntu's Application Manager, search for MYSQL and install the "MySQL Workbench" application. This will allow you to easily see the database structure of SilverStripe sites, and perform lots of other functions such as querying data, running SQL statements etc.
-
-You can create a connection to the mysql server on your local machine in MySQL workbench by clicking the little (+) icon to the right of the MySQL Connections title.
-
-All you should need to do is give it a name, by default the parameters are to localhost. Click "Test Connection" then OK. It will create a card under the MySQL connections which you can then click to connect to the local database. The password you enter is for the root user, this is the same password you entered when setting up MySQL - it should be just "password".
-
-# Further reading/references
-
-* CWP getting started <a href="https://www.cwp.govt.nz/developer-docs/en/1.8/getting_started/" target="\_blank">https://www.cwp.govt.nz/developer-docs/en/1.8/getting_started/</a>
-* Interactive Vim tutorial <a href="http://www.openvim.com/" target="\_blank">http://www.openvim.com/</a>
-* Downgrading PHP on Ubuntu <a href="https://askubuntu.com/questions/761713/how-can-i-downgrade-from-php-7-to-php-5-6-on-ubuntu-16-04" target="\_blank">https://askubuntu.com/questions/761713/how-can-i-downgrade-from-php-7-to-php-5-6-on-ubuntu-16-04</a>
-* Atom: install packages <a href="https://flight-manual.atom.io/using-atom/sections/atom-packages/" target="\_blank">https://flight-manual.atom.io/using-atom/sections/atom-packages/</a>
-* MySQL workbench <a href="https://www.mysql.com/products/workbench/" target="\_blank">https://www.mysql.com/products/workbench/</a>
-
-# Next
-
-[Lesson 01b - Git Repo](01b_GitRepo.md)
+[Lesson 02 - More on Project Structure](02_SiteProjectStructure.md)
