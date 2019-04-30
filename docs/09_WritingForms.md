@@ -102,7 +102,7 @@ Now lets output the form on the LandingPage near the bottom. Notice how to outpu
 ```html
 <div class="row">
     <section class="col-md-10 col-md-offset-1">
-        <h3>Enquiry</h3>
+        <h3>Booking Enquiry</h3>
         $EnquiryForm
     </section>
 </div>
