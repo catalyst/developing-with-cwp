@@ -1,152 +1,247 @@
-# Creating a Theme
+# Working with Themes
 
 The next step in SilverStripe development is choosing which theme you will base the website off. A good way to get started is to take a copy of one to the "out of the box" CWP themes and then modify it as needed. Alternatively you can find a theme on the SilverStripe add ons site http://addons.silverstripe.org
 
-Out of the box, with the standard SilverStripe CWP install you only get a "Starter" theme which is intended for agencies creating websites for larger organisations with a strong brand etc where lots of customisations will happen, another option is the Watea theme - this is an enhancement to the Starter theme and is more fully featured, but more tricky to alter since you have to understand where to place the new files and make changes you want.
+Out of the box, with the standard SilverStripe CWP install you only get a "Starter" theme which is intended for agencies creating websites for larger organisations with a strong brand etc where lots of customisations will happen, another option is the Wātea theme - this is an enhancement to the Starter theme and is more fully featured, but more tricky to alter since you have to understand where to place the new files and make changes you want.
 
-It's worth having both the starter and Watea theme available in the site to see and understand the differences, so from the root directory of your website, please run the following commands...
-
-```
-composer require cwp/watea-theme
-composer require cwp/agency-extensions
-```
-
-This will install the watea theme.
-
-## Git ignore the themes
-
-You add/alter a couple of lines in the .gitignore file in the root directory of your website. We want to ignore the starter and watea theme since we will not be modifying these but taking a copy of the starter theme in a little while as the basis for our own theme.
-
-Open the .gitignore file in your editor. Search for /themes as I believe there is already an entry for this, change that (and add a second line) like seen here...
+## Wātea
+Wātea is a "subtheme" for CWP built on top of the starter theme. To install it, you need to add two more modules to your CWP project:
 
 ```
-/themes/starter_watea
-/themes/starter
+    composer require cwp/watea-theme 2.1
+    composer require cwp/agency-extensions ^2.1
+```
+`cwp/agency-extensions` is technically optional, but you'll have a poor experience without it. You'll also need to add Wātea to your `app/_config/theme.yml` file, directly above starter but below `$public`:
+```
+---
+Name: cwptheme
+---
+SilverStripe\View\SSViewer:
+  themes:
+    - '$public'
+    - 'watea'
+    - 'starter'
+    - '$default'
 ```
 
-Ensure the change is saved. Next run the following command in the terminal to check the these themes are not getting picked up by git.
+### What's happening here
+Wātea is a prime example of a _cascading theme_. When SilverStripe receives a web request and renders it, will first look to the `$public` folder for available templates, icons, fonts, JS, CSS or other web assets. If it does not find what it needs there, it will "cascade" down to the next available theme, which is watea
 
+Watea contains an "enhance" set of templates for navigation, header, search, and other elements. Some of these are "include" templates which are not found in the starter theme, but are referenced in the Watea version of your templates.  Some page templates are only found in starter - the request then cascades down to the "starter" theme
+
+"starter" is where most of your base layer templates will exist. SilverStripe should never be missing a template for a frontend user request at this point, with one notable exception:
+
+"$default" contains framework level templates, which is responsible for rendering content such as developer errors, stack traces, and barebones text from a controller. It also handles the content under the /dev URL. The most famous example that users will directly experience is the /Security/login screen.
+
+### More about Wātea
+
+Run `/dev/build?flush=1` again, and note the visual changes to your website.
+
+Agency Extensions adds a few new features to the CMS that Wātea will automatically use, if if it installed. These include:
+- A Carousel with Hero Image capability added to some pages, or all of them
+- A theme/colour picker
+- custom logos and icon imagery in the header and footer
+
+If you want the ability to customise the colours of Wātea, you'll also need this line to `app/_config/config.yml`:
 ```
-git status
-```
-
-Neither of the themes should be listed, if you do see one or more of these themes listed under the 'Untracked files' heading then please double-check what you have typed in the .gitignore, there is likely a spelling mistake. Please correct this and re-run the git status command until they are no longer listed.
-
-## dev/build
-
-Lastly please run a /dev/build by going to the baseURL of your site in the browser and adding dev/build on the end. This will ensure the SilverStripe framework and cms knows about the new theme.
-
-## Look at the site
-
-Now load up the site in your browser. As you will see it looks different now with a Navy Blue header and footer.
-
-# Creating our own theme
-
-Time to create your own theme. We will base this off the starter theme, not the Watea theme, as we will add our own colours and other enhancements to the copy of the starter theme we take.
-
-* To create a new theme, if your code editor is Atom, you can right-click on the themes/starter and choose Duplicate
-* Then give it the name museum
-* Run the /dev/build command in your browser
-
-Congratulations you have just created a new theme. At the moment it looks exactly the same as the starter theme which is OK. We will make changes to the museum theme throughout the course.
-
-## Changing the theme
-
-Time to say bye bye to the Watea theme, lets change to the new museum theme we created. To do this go to the CMS of the site (remember you can access the CMS by putting /admin on the end of the base URL of your site in your browser - i.e. http://museum.local/admin
-
-![Site Settings](img/03_theme-settings.png "Site Settings")
-
-* Once you are logged in to the CMS, choose "Settings" from the main menu at the left. As you will see on the first (main) tab of the site settings, there is a dropdown to choose the theme.
-* Select the museum theme
-* Click Save near the bottom left of the screen
-* In a new browser tab Visit the front-end of your website
-* You should see it looks like the original Starter theme, with not much colour at all.
-
-# Adding the theme to git
-
-In this case because we are going to be making changes to the museum theme, its our theme, we DO want this checked in to the source control, so in this case we must NOT add anything to the .gitignore for it, but check it in instead.
-
-## Removing existing git history
-
-First we need to remove the existing git history from the museum theme. The starter theme was itself a module installed via composer, and because we copied the starter theme to make our museum theme, the git history of the starter theme was copied as well. This can be confirmed by on the command line changing in to the themes/museum directory. If you do a "git log" you will see some history that is not our own which is not what we want here.
-
-So lets delete the existing git history. ENSURE you are in the theme/museum directory before running this command...
-
-```
-rm -rf .git
-git log
+SilverStripe\SiteConfig\SiteConfig:
+  enable_theme_color_picker: true
 ```
 
-The results of the git log should now show our own project history, confirming the pre-existing git information copied from the starter theme is now gone from our theme.
-
-## Adding the theme to our repository
-
-Now we can add the museum theme to our project. Return to the root directory of your site on the command line, a couple of "cd .." should get you back. Now run these commands to add the museum theme...
-
-```
-git status
-git add themes/museum
-git commit
-```
-
-Type a message such as "Created new theme", then press Ctl-X to exit the editor. Lastly do this command to push the change up to the project repository..
-
-```
-git push
-```
-
-# Altering our museum theme
-
-Now lets have a little bit of fun and alter something in the museum theme to make it our own. Lets just do something simple such as changing the background colour of the header.
-
-The way I am going to show you is the easy way where we just modify the CSS file directly, there is a more powerful but more complex way using Webpack and Laravel Mix to parse something called SCSS and create our main.css file for us.
-
-This requires some set up and additional knowledge which may distract from learning about SilverStripe itself, so we will not be using that in this course. More experienced developers should probably take a look at: https://www.cwp.govt.nz/developer-docs/en/1.7/working_with_projects/customising_the_starter_theme and use the workflow suggested there on projects they create (not this course).
-
-## Changing the site header colour
-
-In this case all we are going to do is change the colour of the header of our site. Later in the course we may make other changes, though most will be altering or creating SilverStripe template files.
-
-* OK open this file: themes/museum/dist/css/main.css
-* Find .site-header
-* Add this line, or something similar (i.e. pick a colour you like) to the css for it: background-color: #c9d9ff;
-
-Ensure the change is saved, now refresh the site in your browser. You may need to do a forced refresh Ctl-F5 to ensure the latest CSS is rendered. Most browsers cache CSS and JavaScript pretty severely which is annoying for web development where you are making changes all the time.
-
-# Refresh Tip
-
-A little tip I have for you, which will make your development life so much easier, is to install an extension for your web browser which adds a button allowing you to fully refresh a page with one click. In Chrome I use an Extension called "Clear Cache".  This adds a button to the right of the address bar near the options menu which looks like a recycling symbol. I would suggest that you go and find it or something similar when doing SilverStripe development, particularly when there are CSS or JS changes.
-
-![Clear Cache](img/03_clear-cache.png "Clear Cache")
-
-In our case, for this course, since we do very little in the way of CSS and no JavaScript it is not necessary to install clear cache or something similar. This is just something to bear in mind.
-
-Also worth a mention is the Disable Cache option in the developer tools, this can also help with clearing cache, but will require you to open the dev tools and turn it on, and then its active for all page loads.
+Other options for the colour picker can be found [here](https://github.com/silverstripe/cwp-agencyextensions/blob/2.1.2/docs/en/01_Features/ThemeColors.md)
 
 
-# Adding and committing the colour change
 
-Similar to earlier I want you to add and commit the change to the main.css. To do this run the following commands from the root directory of the site on the command line.
+### Advantages
+You end up with a highly customiseable theme, aesthetically pleasing, and fully accessible theme built on top of CWP components. Very few websites ever require no customisation at all, but with Wātea's diverse set of features, you may be happy with the out of the box experience with little to no development experience.
+
+### Disadvantage
+Wātea is based on Bootstrap 3. If this is a problem for you, you'll need to create your own theme.
+
+Support is difficult, because you can no longer automatically manage the project with composer once you have made changes to it. As I said, it is very rare for an agency to *never* make a single change to their theme. If you want to build off of Watea, consider the following options
+
+### Workarounds
+* Create a third theme, which cascades down to Wātea and then Starter. Your theme replaces any component found in Wātea; however, you are now responsible for building your own Javascript and CSS. The best way to handle this is to copy the watea folder, paste it into the same directory, then rename the theme to something you own. Delete the `.git` folder in your new copy, re-initialise with `git init`, and manage the new theme yourself with composer.json in the parent project. This creates a version of Wātea that you manage yourself, but you need to take care that nothing in this folder conflicts with behaviour in the previous two modules. 
+
+* Delete the `.git` folder from starter and watea. Add the entire contents of these folders to the version control in the parent project. You can now make your own changes to your website themes without concern for what the upstream branch is doing. However, this may not be desireable for the same reason - you can no longer depend on updates from the upstream branch. Theme and feature updates are now your responsibility
+
+* Don't use either theme. Choose a different one, or create your own.
+
+
+
+
+
+
+## Creating our own theme
+
+If Watea is a bit much, or doesn't satisfy your requirements, you can create your own theme without too much hassle. The simplest themes have a folder structure that looks something like this:
 
 ```
-git status
-git add themes/museum/dist/css/main.css
-git commit
+themes
+    yourtheme
+        templates
+            dist
+                css
+                    app.css
+                js
+                    app.js
+                img
+                    mylogo.png
+            Includes
+                ...
+                Navigation.ss
+                Footer.ss
+            Layout
+                ...
+                Page.ss
+            ...
+            Page.ss
+      
 ```
 
-Enter your commit message, such as "Added header background colour" and then Ctl-X the editor. Finally run this to commit the change.
+The top-level Page contains the "global" layout of any request made to the site. When a user visits a Page, or anything that descends from a Page, they'll see this global layout. Usually this page contains site-wide variables like $SiteConfig or $CurrentUser. This is usually where you will place Header and Footer content. Most importantly, will include the $Layout variable, which generally contains Content and things related to a specific page record. 
+
+`yourtheme` might also contain front-end assets that you've generated using a build tool like gulp or webpack. These tools manage things like js and scss source files, as well as the compiled output into a `dist` directory, which is then exposed to the `public` portion of the website. We will cover this `dist` mechanism briefly, but build topics are a very complex topic outside the scope of this course.
+
+## Installing your theme
+There's generally two ways to do this:
+* commit all changes to version control. This will also include changes to your codebase and means that the theme is considered to be part of your project.
+* manage your theme seperately as its own git repository. The parent project will pull in changes to your theme from composer. This means your theme can have a "stable" tagged release version. It can also be dropped easily into other SilverStripe installations.
+
+Either approach is valid. For the sake of this training course, I will include the theme as part of the parent repository.
+
+
+1. Replace "starter" and "watea" with "mytheme" (or whatever you've named your folder) in `app/_config/theme.yml`
+2. Run a dev/build?flush=1 to view your changes
+
+## Getting started
+
+Let's create an example from the Bootstrap 4 starter template:
+```
+<!doctype html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+
+    <title>$Title :: $SiteConfig.Title</title>
+  </head>
+  <body>
+    <header>
+        <% include Navigation %>
+    </header>
+    $Layout
+
+    <footer>
+        <% include Footer %>
+    </footer>
+
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+  </body>
+</html>
+```
+
+I have also included two templates for Navigation and Footer, which separates those concerns into their own templates. 
 
 ```
-git push
+#Navigation.ss
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+  <a class="navbar-brand" href="$BaseHref">$SiteConfig.Title</a>
+  <ul class="navbar-nav ml-auto">
+      <% if $CurrentUser %>
+      <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          Welcome $CurrentUser.Email
+        </a>
+        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+            <a class="dropdown-item" href="/Security/logout?SecurityID=$SecurityID">Logout</a>
+        </div>
+      </li>
+      <% else %>
+      <li class="nav-item">
+        <a class="nav-link" href="/Security/login" title="Login">
+        Login
+        </a>
+      </li>
+      <% end_if %>
+  </ul>
+</nav>
+```
+
+```
+#Footer.ss
+
+<ul class="nav justify-content-end">
+    <li class="mr-auto">
+        <a href="$BaseHref">
+            <img src='$ThemeDir("themes/mytheme")/dist/img/power.png' alt="Logo" style="width:32px;height:32px" class="mt-3"/>
+        </a>
+    </li>
+    <% loop Menu(1) %>
+    <li class="nav-item m-4">
+        <a class="p-4" href="$Link" title="$MenuTitle">$MenuTitle</a>
+    </li>
+    <% end_loop %>
+</ul>
+```
+
+```
+#Layout/Page.ss
+$Content
+$Form
+```
+
+As you can see, the special `$Layout` variable is populated with $Content from the Layout/Page.ss. $Form is used to inject the Login form, which is a special type of Page. You can also see the template includes Navigation and Footer being automatically filled in. Template includes are very powerful, as they allow you to re-use common elements of your site. They can maintain their own set of variables, conditional blocks, loops, and other logic.  You can also pass variables into these templates as parameters.  Templates can also invoke methods on their controllers known as "Getters", which are functions which retrieve data from any source and display them on the page. Getters are also used to fetch database information, or information from relations. We'll cover this more when we discuss creating new page types
+
+
+### Namespaces
+You may have noticed that our "Page" template corresponds with our "Page" class, while Layout/Page relates to content on the Page,  which is an awesome convention. But what if your class is namespaced?
+
+SilverStripe 4 introduced namespaced classes, which required some fairly significant changes to existing themes. Themes now utilise a folder structure to mimic namespaces.
+
+Templates defined on your theme can replace those defined in a module. For example, if you wanted to overload the Blog template with your own design, you can do this by copying the template (including the folder structure) to the templates folder of your theme:
+```
+themes
+    yourtheme
+        templates
+            SilverStripe
+                Blog
+                    Model
+                        Layout
+                            BlogPost.ss
+
+```
+
+Any changes you make to your themed version of the template will take precedence over templates defined on the module. However, you must ensure that the folder structure matches that of the module exactly. This can be confusing to new developers, but once this convention is learned it can be a powerful tool. One common use-case for this is redefining the EdiableFormField templates for the userforms module to include Bootstrap styling.
+
+One exception to this is overloading the Security_* templates, which continue to work without namespacing. You would typically overload these forms if you wanted to make some changes to the login, logout, change password, or password reset screens. Those templates are:
+
+```
+themes
+    yourtheme
+        templates
+            Security_login.ss
+            Security_logout.ss
+            Security_changepassword.ss
+            Security_resetpassword.ss
 ```
 
 # Further reading/references
 
 * SilverStripe add ons http://addons.silverstripe.org
-* Working with the starter theme https://www.cwp.govt.nz/developer-docs/en/1.7/working_with_projects/customising_the_starter_theme
-* Slightly older 'default' theme https://github.com/silverstripe/cwp-theme-default (I think it looks nicer)
-* Clear cache chrome extension https://chrome.google.com/webstore/detail/clear-cache/cppjkneekbjaeellbfkmgnhonkkjfpdn?hl=en
+* Working with the starter theme https://www.cwp.govt.nz/developer-docs/en/2/working_with_projects/customising_the_starter_theme
 
-# Next
+
+
+## Conclusion
+In the next course, we'll learn how to create a new page type, defining fields which can be retrieved from the database automatically using SilverStripe's ORM tool, and how to create a template for this new page using the conventions described above
 
 [Lesson 04 - Creating a new Page Type](04_CreatingANewPage.md)
