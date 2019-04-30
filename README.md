@@ -31,8 +31,7 @@ We will cover the following topics...
 * Page creation and adding fields to the CMS interface.
 * The ORM, Dataobject creation and object relationships.
 * Themes and template syntax (loops, conditionals, outputting data).
-* Where to find modules, themes, and how to get help.
-* Installing some additional, helpful modules, using Composer.
+* How to create a new module, with a dataobject and a modeladmin
 * Creating and processing forms.
 
 ### Note 1
@@ -57,18 +56,15 @@ Students should have some experience with PHP, HTML, and CSS. Experience with Gi
 These are the lessons for the course (in the docs folder). Throughout the lessons we we be building a small Museum website to get hands-on experience developing in SilverStripe.
 
 * [Installing CWP SilverStripe](docs/01_InstallingCWPSilverStripe.md)
-* [Git Repo](docs/01b_GitRepo.md)
 * [Project Structure](docs/02_SiteProjectStructure.md)
-* [Creating a Theme](docs/03_CreatingATheme.md)
+* [Working with themes](docs/03_WorkingWithThemes.md)
 * [Creating a new Page Type](docs/04_CreatingANewPage.md)
 * [Creating a page Template](docs/05_CreatingATemplate.md)
 * [Introduction to CMS fields](docs/06_IntroToCMSFields.md)
 * [Installing a Module](docs/07_InstallingAModule.md)
-* [Creating a DataObject](docs/08_CreatingADataobject.md)
-* [Creating another page - Venues](docs/09_CreatingTheVenuePage.md)
-* [Venue page Template](docs/10_VenuePageTemplate.md)
-* [Creating forms - Venue Booking](docs/11_VenueBookingForm.md)
+* [Writing DataExtensions](docs/08_WritingDataExtensions.md)
+* [Creating forms - Booking](docs/09_WritingForms.md)
 
 ## Primary trainer
 
-Douglas McKechie, SilverStripe team.
+Elliot Sawyer, SilverStripe team.
