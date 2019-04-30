@@ -1,119 +1,272 @@
-# Installing a Module
+# Creating a module - also, DataObjects and ModelAdmins!
 
-In this lesson we will look at installing a third-party module for SilverStripe, i.e. a module created by the community which provides features not in the core SilverStripe framework or CMS. We will then use this module, called Zen Validator, to validate some fields in the CMS.
+In this section, we will detail how to create a new module, and load it with DataObjects and ModelAdmins that can be dropped onto another project.
 
-## Where to find modules
+You can create your own module in SilverStripe very easily. Quite often this is done to de-couple your code from your project and allow it to be dropped into other projects. Modules can retain their own separate version control history, and are generally maintained separately from your parent project. They're also very important to the open-source ecosystem that SilverStripe depends on - SilverStripe itself is a group of modules, and CWP exists because of community-created modules.
 
-Besides asking anyone familiar with SilverStripe if they know of a great module that does -something-, the best way to find modules is via the SilverStripe Add Ons page. http://addons.silverstripe.org/
-It lists popular add ons and provides a search feature to help find modules.
-
-Note you can also find themes via this website as well as modules to provide functionality.
-
-# Exercise
-
-* Open the add ons website http://addons.silverstripe.org/
-* Enter "validation" in the Search for text box and press search
-* Look down the list until you see "sheadawson / silverstripe-zenvalidator", we will be installing this module.
-* Click on this module in the list, you will be taken to a details page where there is more of a description and also links to the home page of the module.
-
-![Add ons site](img/07_add-ons-site.png "Add ons site")
-
-Normally modules are located on Github.com. If you are not familiar, GitHub is a Web-based Git version control repository hosting service. It is mostly used for computer code. It offers all of the distributed version control and source code management (SCM) functionality of Git as well as adding its own features.
-
-# Installing the module
-
-We will use Composer on the command line to install the module. The readme of modules on Github often have the composer command required to install it in your project, so click through to the module on github, the link is https://github.com/sheadawson/silverstripe-zenvalidator
-
-As you will see in the installation section of the readme, the command to install it is as below. On the command line you must be in the root directory of your website (where the composer.json and lock files are). Run the command...
+## Folder structure
+A module is simply a folder with a particular set of files:
 
 ```
-composer require sheadawson/silverstripe-zenvalidator
+yourmodule
+    composer.json
+    _config.php
+    _config/
+        config.yml
+    src/
+        ...
+        
+```
+### _config.php
+This is required to exist in order for the module to be detected by the framework. It is almost always empty, but it can be used to initialise parts of your module that cannot be defined in YML. For example, perhaps your module needs a random number generated on each request, or needs to override the memory_limit on PHP using ini_set.
+
+When I say "empty", I actually mean it needs an opening `<?php` tag and a line break. Otherwise your build will fair It does not need to execute any PHP
+
+### config.yml
+Once the module detects your _config.php file, it will consult the contents of the `_config` folder for any settings that have been defined in YML. As we observed previously, YML can be used to override `private static $variable` values defined on a class. For example, a module might provide a new DataExtension for some class in the framework, and automatically apply itself so the developer does not have to:
+```
+SilverStripe\SiteConfig\SiteConfig:
+  extensions:
+    - 'YourName/YourProject/SomeDataExtension'
 ```
 
-As you will see Composer will go off and install the module. It automatically updates the composer.json and composer.lock files for you. The changes to these should be committed to the repository used for your site so that if anyone else works on your website, or for yourself in future, when they clone down the repository for your site and run composer install they will also get the Zen Validator module installed.
-
-## .gitignore
-
-After the module is installed, if you do a "git status" on the command line you will see the composer.json and composer.lock files are listed as modified, but also that the entire zenvalidator directory is listed under the untracked files. Because Zenvalidator is a module installed via composer and not something we will be making changes in, we need to tell git to ignore it.
-
-So. First on your command line run the following
-
+### src
+This suggests, but does not enforce, the PSR-4 PHP specification for autoloading classes. There is no proscribed folder structure other than a top-level folder (usually `src` but some pre-PSR4 modules still use `code`). A typical module will look something like this:
 ```
-git status
+src
+    Admin/
+        SomeModelAdmin.php
+    Model/
+        SomeDataObject.php
+    PageType/
+        SomePageType.php
+    Extension/
+        SomeDataExtension.php
 ```
+### composer.json
+It is important to include a composer.json file with your module so that it can be distributed and managed with composer in other projects. Here's an example of one I've written:
 
-See the changed files and the untracked zenvalidator directory.
-
-Now open in your editor the .gitignore file in the root directory of your site. As you will see most of the directories in your site are listed. Crucially the mysite and theme directories are not - because you are writing code in these 2 directories you want changes in them detected by git so you can commit the changes to the repository for your site.
-
-At the bottom of the file, add the following and then save.
-
-```
-/zenvalidator
-```
-
-Now on the command line re-run the "git status" command and you should see that the zenvalidator directory is no longer listed, only the modified composer.json/lock files and now the .gitignore files are listed. Add and commit these changes to the repository for you site.
-
-## Completing installation
-
-Zen Validator is pretty easy to install and use, other modules may require config information to be entered in the mysite/config yaml file, but all we need to do to complete installation of Zen Validator is run the /dev/build command via your browser. You should always run /dev/build after installing a module, some may create additional tables in the database.
-
-# What can Zen Validator do
-
-You may want to have a quick read through the readme of Zen Validator - the "CMS Usage" section. All good SilverStripe modules will have documentation like this which details how to use it. Some times the docs are separate from readme and may be in a /docs/en folder in the Github repository. In our case, for now we are only going to use the "Required Fields" feature which allows us to specify the fields which are required to be entered in the CMS.
-
-The required fields option is also available in the built in SilverStripe validator, but not all the other validation features available in Zen Validator, so in pretty much every project we have created over the last couple of years we have used this module. We will be using some of the other zen validation features later in this course.
-
-# Making the Intro required
-
-I think it would be great make the Intro added to the Page.php in the previous lesson required. That way there will always be some content to output on landing pages for the child pages. So in your editor lets open the mysite/code/pagetyopes/Page.php file.
-
-As mentioned in the Zenvalidator readme, the way to specify the required fields is as follows. Please add this to the Page.php Page class (i.e. the model not the controller class).
-
-```php
-public function getCMSValidator()
+```js
 {
-    $validator = ZenValidator::create()->setConstraint(
-        'Intro',
-        Constraint_required::create()
-    );
+    "name": "elliot-sawyer/totp-authenticator",
+    "description": "Enable 2FA authentication with TOTP",
+    "type": "silverstripe-vendormodule",
+    "license": "BSD-3-Clause",
+    "keywords": [
+...
+    ],
+    "authors": [
+        {
+            "name": "Elliot Sawyer"
+        }
+    ],
+    "require": {
+...
+    },
+    "require-dev": {
+...
+    },
+    "autoload": {
+        "psr-4": {
+            "ElliotSawyer\\TOTPAuthenticator\\": "src/",
+            "ElliotSawyer\\TOTPAuthenticator\\Tests\\": "tests/"
+        }
+    },
+    "extra": {
+        "branch-alias": {
+            "dev-master": "1.0.x-dev"
+        }
+    },
+    "support": {
+        "issues": "https://github.com/elliot-sawyer/totp-authenticator/issues",
+        "source": "https://github.com/elliot-sawyer/totp-authenticator"
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true
+}
 
-    // currently parsley validation doesn't work so well in the cms, so disable.
-    $validator->disableParsley();
+```
+At a minimum, you should provide the "name" and "type" keys. The `name` key is what composer uses to look up and install your module. `"type":"silverstripe-vendormodule"` ensures the module is installed in the vendor folder, rather than the top-level of your project. 
 
-    return $validator;
+#### vendor-expose
+If any part of your module is publicly accessible (i.e. you've written a Javascript app with a CSS stylesheet and some icons), you'll need to "expose" those directories. You can do this with the `extra` key:
+```js
+"extra": {
+    "expose": [
+        "dist/js",
+        "dist/css",
+        "dist/img",
+        ...
+    ]
+}
+```
+#### Packagist, and using forks
+Your module will only work with `composer require` if you list it publicly on packagist. For a private repository or one you can't/won't publish on packagist, you'll need to add a key called "repositories" after your "require" keys for composer to pick them up:
+```js
+{
+    ...
+    "repositories": [
+        {
+            "type": "vcs",
+            "url": "git@github.com:elliot-sawyer/totp-authenticator.git"
+        }
+    ],
+    ...
+}
+```
+Make sure to use the SSH URL for this, otherwise you may need to type or cache a password when running composer.
+
+This feature is also useful for when you've forked another user's module (say, to fix a bug in the CMS). Normally composer will checkout the parent project, but if you provide it with an alternative repository that uses the same "name" key in its composer file, Composer will seek out the version defined in the "repositories" field instead.
+
+## Installing it
+Now that you've created a module, how do you ensure it's included in your project? 
+
+The best way is to ensure your project is pushed to your remote version control so that Composer can automatically install it in the `vendor` folder and pick it up on `dev/build?flush=`. If you want to continue making version-controlled chan
+
+
+## Great - let's build something!
+
+We're going to make a new module called yourname/email-management
+
+Create the following files:
+    mkdir -p yourname/email-management/_config
+    mkdir -p yourname/email-management/src/Admin
+    mkdir -p yourname/email-management/src/Model
+    touch yourname/email-management/_config.php
+    touch yourname/email-management/_config/config.yml
+    touch yourname/email-management/src/Admin/EmailManagementAdmin.php
+    touch yourname/email-management/src/Model/ManagedEmail.php
+    touch yourname/email-management/composer.json
+
+Now let's make some changes to composer.json so our local composer can find it:
+
+composer.json
+```js
+{
+    "name": "yourname/email-management",
+    "type": "silverstripe-vendormodule",
+    "require": {
+        "silverstripe/framework": "^4"
+    }
 }
 ```
 
-Now go to one of the child pages in your site, under the attractions page, in the CMS and delete the intro and try saving the page. As you will see SivlerStripe now displays a red message box under the field telling you that the field is required.
+config.php (note the newline character after the `<?php ` tag)
+```
+<?php
 
-You can customise the message displayed to something more descriptive, so lets do that by changing the following line in the code
-
-```php
-change...
-Constraint_required::create()
-
-to...
-Constraint_required::create()->setMessage('Please enter an Intro for this page.')
 ```
 
-And once again try to save a page in the CMS without an intro, this time rather than the default 'This field is required' you will see your message.
+1. Initialise a new git repo `git init` and do an initial commit `git add .; git commit -m 'initial commit'`
+2. Create a new remote repository on github or similar, make note of the clone URL.
+3. Add a new remote to your newly initialised repo: `git remote add origin <yourcloneurl>`
+4. Force push your new repo to it `git push -u origin master`
+5. Update the composer.json file in your parent repository to include this new repo:
+```js
+    "require": {
+        "yourname/email-management":"dev-master as 0.0.1"
+    },
+    "repositories": [
+        {
+            "type": "vcs",
+            "url": "yourcloneurl"
+        }
+    ]
+```
+6. Run `composer update`. You should see your new module pulled into the project.
 
-![Required field](img/07_required-field-message.png "Required field")
+Congratulations: you've now built and published a new module, and included it in your CWP website. Let's add some stuff to make it useful.
+
+### The Managed Email DataObject
+As a developer, I find there are 2 types of things I create the most when building SilverStripe websites. The first are Pages (which we have already seen), the other is DataObjects which are also a class with properties and methods. Data objects are more low level, not as featured as pages. In fact if you follow the inheritance tree back far enough you will discover that pages are actually children of the DataObject class.
+
+Unlike a page which represents a whole page in the site and contributes to the structure by appearing in the site tree. Dataobjects are useful containers for smaller bits of functionality which in many cases may not be that visual (and therefore don't have a corresponding template in the theme), and are not normally structural like a page.
+
+For example, in this lesson we are going to create a Data Object for managing emails. This will allow us to write and manage email messages in the CMS, including the From Address, a To: address, the Subject, and the Message body. We will utilise this later when learning how to build forms
+
+Create a new file in src/Model/ called ManagedEmail.php
+```php
+namespace YourName\ManagedEmails;
+use SilverStripe\Control\Email\Email;
+use SilverStripe\ORM\DataObject;
+class ManagedEmail extends DataObject
+{
+    private static $db = [
+        'Label' => 'Varchar(255)',
+        'FromAddress' => 'Varchar(255)',
+        'ToAddress' => 'Varchar(255)',
+        'Subject' => 'Varchar(255)',
+        'Body' => 'HTMLText'
+    ];
+
+    private static $summary_fields = ['Label', 'Subject'];
+
+    public function send($toAddress)
+    {
+        $email = Email::create();
+        $email->addTo($toAddress);
+        $email->addFrom($FromAddress);
+        $email->Subject = $this->Subject;
+        $email->Body = $this->Body;
+
+        $email->send();
+        
+    }
+}
+```
+
+#### Validation
+Let's make the "From" address required. This is important, as emails cannot be sent at all unless the sender is defined. Add the following method after the `send` method:
+```php
+
+    public function validate() {
+        $valid = parent::validate();
+
+        if(!$this->FromAddress) {
+            $result->addError('The "From" address is required');
+        }
+        return $valid;
+    }
+```
+
+Now if the From address is missing, we won't be able to save our DataObject until we fix it.
+
+### The Emails ModelAdmin
+
+At present if you go to the CMS and look for your Managed Email dataobject you won't find a way to create them. This is another big difference between DataObjects and Pages; pages can always be created via the Site Stree, but DataObjects have no singular place for creation by default. This is because they are often used on specific pages, so you would go to that page and create some data objects. An example is the home page of the site, once its page type is changed from just "page" to "Home page" you can add Quicklinks to it. These quicklinks are a dataobject provided by CWP.
+
+We want to create a place in the CMS for our Managed Emails to be viewed, created, updated and deleted without having to add them to a page. We will add this to our module but by creating a _Model Admin_. As the name suggests this feature provides a way to administer a set of models. We will create one of these now so we can manage our Managed Emails for use in a form that we will create later.
+
+ModelAdmins are dead simple to create. Create a new file src/Admin/ManagedEmailAdmin.php
+```php
+namespace YourName\ManagedEmails;
+use SilverStripe\Admin\ModelAdmin;
+class ManagedEmailAdmin extends ModelAdmin {
+    private static $menu_title = 'Managed emails';
+    private static $url_segment = 'managed-emails';
+    private static $managed_models = [
+        ManagedEmail::class
+    ];
+}
+```
+
+That's it: these three fields are all that's required to add a new admin area to the CMS, with a new tab and a GridField for managing your models. You can created, retrieve, update, and delete any of your ManagedEmail records. You can import and export existing records to and from a CSV, search and filter for emails, and sort them by any column you want.
+
+You may have noticed that the `$managed_models` variable is an array - you can add any number of models to administer in this area, and a new tab will be created for each one.
 
 # Summary
 
-So in this lesson we have really done 2 things
-
-* 1) is find and install a module to provide additional functionality to SilverStripe, and
-* 2) add some validation to fields in the SilverStripe CMS. Remember that as well as modules themes can be found via the http://addons.silverstripe.org
+In this lesson, we have learned quite a bit:
+1) How to create a new module from scratch
+2) How to define new DataObjects, and
+3) How to administer any DataObject using a ModelAdmin
 
 # Further reading/references
 
 * SilverStripe add ons http://addons.silverstripe.org/
-* Modules dev docs https://docs.silverstripe.org/en/3/developer_guides/extending/modules/
-* Zen Validator Github https://github.com/sheadawson/silverstripe-zenvalidator
-
+* Modules dev docs https://docs.silverstripe.org/en/4/developer_guides/extending/modules/
+* SilverStripe Data model and ORM https://docs.silverstripe.org/en/4/developer_guides/model/data_model_and_orm/
+* Model admins https://docs.silverstripe.org/en/4/developer_guides/customising_the_admin_interface/modeladmin/
 # Next
 
-[Lesson 08 - Creating a DataObject](08_CreatingADataobject.md)
+[Lesson 08 - Writing extensions](08_WritingDataExtensions.md)
