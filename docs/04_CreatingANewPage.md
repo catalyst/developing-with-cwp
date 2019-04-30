@@ -1,4 +1,31 @@
-# Existing page types
+# Creating a new pagetype
+
+In this lesson, we'll demonstrate what PageTypes are and how you can use them. We will first inspect fields inherited from the CWP BaseHomePage page type and explain their purpose. We will learn how to retrieve data from the database, as well as how to set up some relationships to other database tables.
+
+## Before we begin
+Since this is a CWP developer course, we're going to continue our lesson by teaching to CWP features. Let's switch back to the Watea theme:
+
+```
+    composer require cwp/watea-theme 2.1
+    composer require cwp/agency-extensions ^2.1
+```
+
+app/_config/theme.yml
+```
+---
+Name: cwptheme
+---
+SilverStripe\View\SSViewer:
+  themes:
+    - '$public'
+    - 'watea'
+    - 'starter'
+    - '$default'
+```
+
+While we focus on CWP here, the lessons learned are applicable to all SilverStripe development.
+
+## Existing page types
 
 In this lesson we will create our first new page type for use in the site, but first its probably best to look at what page types come out of the box in CWP SilverStripe as there are a lot. The best way to see a list of them is to log in to the CMS of our site but putting /admin on the end of the base url, i.e. http://museum/admin then log in with "admin" and "password".
 
@@ -22,30 +49,33 @@ So as you can see this gives you a lot out of the box; Basic pages, News, Events
 
 One main thing which is missing, and that we will be creating now, is a Landing type of page for each section of your website. I.e. a pages which sit below the home page, but above the general content pages. The plan for this landing page is to list the pages underneath, so providing an easy way for people to navigate your site.
 
-# Creating the landing page
+## Creating the landing page
 
-Normally new page types you create inherit from the "Page" (generic) page type, so an easy way to get going is to duplicate the mysite/code/pagetypes/Page.php, you can do this easily in Atom by right-clicking on it in the project tree and then clicking "Duplicate". Change the file name to "LandingPage.php". Alternatively just create a new file in your favourite editor and copy and paste in the code from the Page.php
+Normally new page types you create inherit from the "Page" (generic) page type, so an easy way to get going is to duplicate the app/src/PageTypes/Page.php into LandingPage.php.  Create a new file in your favourite editor and copy and paste in the code from the Page.php into LandingPage.php. 
 
 Once this is done, in the newly created LandingPage.php file you must edit the class names to include the word Landing, and also change it extend Page for example...
 
 ```php
 class LandingPage extends Page {
-    private static $db = array();
-    private static $has_one = array();
-}
-
-class LandingPage_Controller extends Page_Controller {
-    private static $allowed_actions = array();
+    private static $db = [];
+    private static $has_one = [];
 }
 ```
 
-## Page Class and Controller class explained
+You will also need to create app/src/Controllers/PageController.php
+```php
+class LandingPage_Controller extends Page_Controller {
+    private static $allowed_actions = [];
+}
+```
 
-You may have heard of MVC before, if not it stands for Model-View-Controller and is quite a common and well regarded way to organise the code structure of a CMS or other PHP framework. Often the code for these 3 things are in separate files, 1 file for the Model (think of this as the database structure), 1 file for the View (the code to render the HTML), and 1 file for the Controller (contains the business logic, connects the DB model with the view).
+### Page Class and Controller class explained
 
-In SilverStripe 3.x, the Model and the Controller classes are in the same file with the top one containing the model which is why, as you may have noticed, there is an array called $db, and the bottom class being the controller hence the \_Controller postfix in the name.
+You may have heard of MVC before, if not it stands for Model-View-Controller and is quite a common and well regarded way to organise the code structure of a CMS or other PHP framework. The code for these three things are in separate files: one file for the Model (think of this as the database structure), one file for the View (the code to render the HTML), and one file for the Controller (contains the business logic, connects the DB model with the view).
 
-# dev/build
+In SilverStripe 4, the Model and the Controller classes are split out into separate files - a Model and a Controller. In LandingPage.php there are arrays called $db and $has_one. The controller, at the moment, contains no methods that will respond to a URL. If we were to add one, we would add it to the "allowed_actions" array to get it to respond via a URL.
+
+## dev/build
 
 ![Dev Build](img/04_dev-build.png "/dev/build")
 
@@ -53,7 +83,7 @@ Even though the LandingPage.php file is reasonably bare, it contains the minimum
 
 * \*Note the $db, $has_one, and $allowed_actions arrays are not actually needed either if you really want just a new page type in the CMS with no additional functionality on top of the page it extended.
 
-# Adding a description
+## Adding a description
 
 As you may have noticed in the list of pages in the CMS, there is no description for you page to the right of it's name. Lets add one to help describe to a CMS user what the type of page is to be used for. To do this add the following line inside the LandingPage class on a line before the $db array...
 
@@ -77,19 +107,35 @@ SilverStripe uses an ORM system for the database, ORM stands for Object Relation
 
 Also the ORM system means that as a developer, you can write pretty high level code to create, read, update, delete (CRUD) your pages and other dataobjects rather than needing to write raw SQL or build sql queries using "Active Record" style syntax (though both these of these methods are available if needed).
 
-For example to retrieve a DataList of all landing pages ordered by Title you can simply do as follows...
+### How to use the ORM
+
+The ORM is an incredibly powerful tool that you can use to query just about anything in the database. Here are some examples:
 
 ```php
-$pages = LandingPage::get()->sort('Title');
+//fetch a list of all homepage objects, and return the first one
+$homepage = HomePage::get()->first() 
+
+//get all pages, sorted by most recently edited first
+Page::get()->sort('LastEdited DESC') 
+
+//get 10 most recently edited pages, with titles that Start with A and do not end with S
+Page::get()
+  ->filter('Title:StartsWith', 'A')
+  ->exclude('Title:EndsWith', 'S')
+  ->sort('LastEdited DESC')
+  ->limit(10)
+
+//get page with ID#12
+Page::get()->byID(12)
+
+//get all of the QuickLinks on the homepage we queried earlier
+$quicklinks = $homepage->QuickLinks();
+
+//how many quicklinks?
+$quicklinks->Count()
 ```
 
-And to retrieve and update a record, the ORM syntax is like this...
-
-```php
-$facility = Facility::get()->byID(2);
-$facility->Title = 'Barbecue';
-$facility->write();
-```
+The ORM also supports more advanced features, such as `innerJoin`, `leftJoin` and `where` to write complex queries if required, which is rare.
 
 The SilverStripe docs have this very succinct explanation of what the SilverStripe ORM means...
 
@@ -133,11 +179,11 @@ A simple refresh of the page should be sufficient in these cases, when there are
 
 ## Table structure in the SilverStripe database
 
-Now lets have a look at the table structure in a SilverStripe database. This is where the MySQL Workbench application you should have installed earlier will come in handy.
+Now lets have a look at the table structure in a SilverStripe database: 
 
 ### General
 
-Many tables have an auto-incremented ID column, and auto populated Created, and LastEdited datetime fields.
+Most tables in SilverStripe have an auto-incremented ID column, a auto populated Created, and LastEdited datetime fields. They may also have a ClassName field, which represents the class that describes that particular DataObject.
 
 ### SiteTree
 
@@ -145,17 +191,93 @@ In terms of the page structure of the site, the most important table here is cal
 
 Site tree contains all the basic info about the page records, including the UrlSegment, Title, Content, Sort, ParentID and so forth.
 
-You may also notice it contains a column called ClassName. This is because no matter the page type, a record will be created in the SiteTree table when a user adds a page via the CMS.
-
 If you select * from the table to list all records (right-click the table in MySQL workbench and choose "Select Rows"), you should see a number of records with various class names: Page, ErrorPage, HomePage, and if you added a Landing Page in the CMS a record with the ClassName of LandingPage.
 
 Another important thing to keep in mind about SiteTree and Pages you create is that SilverStripe will only create a new table for your page type if you have specified an additional field for that page type. It will create a 1 to 1 relation between this new table and site tree, then when querying to get all the information about this table it will join the 2 tables together.
 
-Just like pages defined in PHP subclass the Page class and you can specify new properties and methods in your child class, in the database, SilverStripe kind of does inheritance too with the "child" tables only containing the new columns.
+Just like pages defined in PHP subclass the Page class and you can specify new properties and methods in your child class, in the database, SilverStripe will also inherit information from "child" tables only containing the new columns. This normally requires some complicated database queries, but the ORM takes care of all of this behind the scenes.
 
 At this stage because we did not add any new fields to the LandingPage class we created, no LandingPage table in the DB has been created. All the information about the LandingPage can be contained in the SiteTree table.
 
-## DataObjects
+As an example, let's look at [BaseHomePage.php](https://github.com/silverstripe/cwp/blob/2.2.3/src/PageTypes/BaseHomePage.php) for a real example of definitions used by CWP
+
+
+#### Config fields
+We observe these as `private static $variablename;` at the top of the class. These provide some sensible defaults for values used throughout the page. Normally, a `private static` variable would mean that PHP can never access its values from outside the class, so what's happening here?  These values can be overloaded using a YML file defined on your app/_config folder. In SilverStripe, this is known as the "Config API", and it is a common way to overload values defined in a module without making any modifications to the module itself. This means you can heavily customise functionality provided by a module without creating a fork or making your own modifications. This means that you can continue to use Composer to manage the maintanence of upstream modules. 
+
+
+##### Special cases
+The Config API is a powerful tool that can be used to customise functionality throughout your codebase, including in modules you down control. However, in SilverStripe development you will see some variables in particular are used more frequently than others. 
+
+Let's go into some common uses of private static variables shown on BaseHomePage.php
+###### $icon
+This variable defines the icon that appears in the CMS Site Tree. If ignored, the default Page icon is used
+
+###### $hide_ancestor
+This variable is used to hide a particular "ancestor" page (i.e. a page your current class is extended from). It is normally used to hide pagetypes which are not intended to be published directly (such as BasePage and BaseHomePage). It can also be utilised by developers to remove particular page types from the CMS. For example, if you don't want users to ever publish a VirtualPage, you can set the following on your app/_config/config.yml file without making any changes at all to the CMS module:
+```yml
+SilverStripe\CMS\Model\VirtualPage:
+  hide_ancestor: 'SilverStripe\CMS\Model\VirtualPage'
+```
+
+###### $singular_name
+This defines the human readable "singular" name of the class ("Home Page"). This is most commonly shown on "Add new ..." buttons in the CMS, the "Add New Page" section of the CMS, and in model administration areas. 
+
+###### $plural_name
+Similar to the singular_name, this is the "plural" name of the class ("Home Pages") and is normally used in similar contexts
+
+###### $table_name
+While not strictly required, this variable was introduced in SilverStripe 4 to grant developers control over the generated table name, which gets created on dev/build. Without it, you'll see parts of the namespace included in the name of the generated table. It is highly recommended that developers utilise this variable in namespaced code; it may even be required in future versions of SilverStripe.
+
+It is also useful for connecting your classes to code generated on an older codebase, or tables / views that may be managed outside of SilverStripe
+
+###### $summary_fields
+These are a list of "display fields" shown to the user when the object is managed in a GridField. If the column represents the result of a "data list" fetched as a result of a database query, it is automatically searchable, filterable, and sortable with no other input from you. These do not need to be a database column: they can also call a method to display arbitrary data in the cell, such as displaying a ThumbNail or the calculated sum of two or more other columns. This is known as a "getter" method, which we'll learn more about later.  When using a getter, you lose the ability to search, sort, or filter on that particular column. 
+
+##### Database relationships
+SilverStripe utilises something called an object-relational mapping (ORM) to extract information from your database without writing any queries at all. This powerful abstraction tool generally works across all popular databases, and protects users and developers from the common perils introduced by writing raw and potentially unsafe database queries that utilise user-generated input.
+
+In order for the ORM to work its magic, each class that uses it needs to be told how it relates to other classes
+###### $db
+These relate to database columns on the table name for this particular class. If you were to open the "HomePage" table and pick any database column, you would usually find a corresponding entry on the $db field. This is not always the case, as some variables (such as Title, ID, LastEdited, and Created) are inherited from other classes. The ORM takes care of all of this for you, and you never need to worry about writing complicated INNER JOIN queries yourself. 
+###### $has_one
+This is very similar to the $db field; however, it relates specifically to a single ID on another table. For example, in the future your Home Page may "has one" HeroImage, which might be an ID found on the Image or File table. 
+
+`private static $has_one = ['HeroImage' => Image::class];`
+###### $belongs_to
+The belongs_to is a special case for the has_one relationship. This informs the ORM to use the corresponding has_one relationship on the other class to complete the database join
+`private static $belongs_to = ['Parent' => HomePage::class];`
+
+###### $has_many
+This is demonstrated on the homepage with "Quicklinks" records. In CWP, QuickLinks on the homepage are a series of simple DataObjects, known as "quick links", that relate to hyperlinks on another area of the website. A home page "has many" of these links, and it is managed with a GridField. 
+
+It is important to note that "has_many" objects can only have a single parent, so they cannot be reused on other classes. If you wanted to re-use your set of Quicklinks on other pages, you would want to use a many_many relationship instead.
+`private static $has_many = ['QuickLinks' => QuickLink::class];`
+###### $has_one
+A corresponding $has_one relationship is required to use a has_many field. This is most commonly used to demonstrate a "Parent" relationship to a child class. For example
+`private static $has_one = ['Parent' => HomePage::class];`
+
+##### Other fields
+Some other fields available to the developer (not shown on BaseHomePage) are:
+
+###### $many_many
+This is similar to the has_many relationship, but it allows you to re-use records by attaching them to other records without duplication. One example of this is the "related pages" feature in CWP. The ORM manages the relationship through a "join table" with a set of IDs. This is like saying "a blog entry has many tags, and a tag belongs to many different blog entries": many_many would appear on the BlogEntry class.
+###### $belongs_many_many 
+This is a reciprocal relation on another table to complete the the many_many relationship. This is like saying "a blog entry has many tags, and a tag belongs to many different blog entries": belongs_many_many would appear on the tag class.
+###### $many_many_extraFields
+It is possible to inject data into your join table, if the relationship requires some extra information. A common example of this application is a "SortOrder" integer field, which tracks the sorted order of IDs in a relationhip. If, for example, your tags were not sorted alphabetically but managed in the CMS, a many_many_extraField might be used to manage that relationship
+###### $many_many_through
+This is a new feature introduced in SilverStripe 4 which allow the "internal join table" to be associated with a DataObject. This is like saying "An Order has many Items, and an Item belongs to many Orders. Go through the LineItem relation for quantity, colour, and t-shirt sizes"
+
+
+
+## What is a DataObject?
+
+Simply put, a _DataObject_ is a PHP class that corresponds to a database Table. The table will contain a list of these DataObjects and their descendents, also known as a DataList. The DataObject class describes the relationship with other DataObject classes and their tables. The SilverStripe framework uses an "ORM" (object relational mapper) to abstract the database functionality. We'll learn more about this in a bit.
+
+There's are two sibling classes, ArrayList and ArrayData, with similar functionality but does not represent any database output. 
+
+All pagetypes are extended from DataObject - it is the source of common fields such as ID, Created, and LastEdited.
 
 The same system of "inheritance" can apply to Dataobjects as well, where if you have a child class of a dataobject you created, a child table will only contain the new fields.
 
@@ -163,14 +285,14 @@ Note with DataObjects there is no common table like there is with pages and the 
 
 ## More details
 
-We will look at the database more throughout this course as we create Dataobjects, relations, and more CMS fields. The SilverStripe docs linked below contain heaps of information about the ORM.
+We will look at the database more throughout this course as we create DataObjects, relations, and more CMS fields. The SilverStripe docs linked below contain heaps of information about the ORM.
 
 # Further reading/references
 
-* How to create pages in the CMS https://userhelp.silverstripe.org/en/3.6/creating_pages_and_content/pages/
-* SilverStripe ORM and data model https://docs.silverstripe.org/en/3/developer_guides/model/
-* Intro the ORM https://docs.silverstripe.org/en/3/developer_guides/model/data_model_and_orm/
+* How to create pages in the CMS https://userhelp.silverstripe.org/en/4/creating_pages_and_content/pages/
+* SilverStripe ORM and data model https://docs.silverstripe.org/en/4/developer_guides/model/
+* Intro the ORM https://docs.silverstripe.org/en/4/developer_guides/model/data_model_and_orm/
 
 # Next
 
-[Lesson 05 - Creating a page Template](05_CreatingATemplate.md)
+[Lesson 05 - Creating a landing page template](05_CreatingATemplate.md)
