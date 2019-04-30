@@ -24,6 +24,7 @@ Sometimes if you have made a mistake in your coding, the website will throw an e
 
 Also when it comes time to write extensions, its helpful to dive in to these directories and see what fields and functions things like the CWP news and events pages have, along with their class name so you can extend successfully.
 
+
 # App directory
 
 We will be spending a lot of time in this directory in this course, this is where you create new page types, can create dataobjects (which we will cover later) and other things. The templates for these pages which control how they look and what is displayed to the user are created under the themes folder which we will take more of a look at in the next lesson. While it is possible to include some templates under this folder in the `app` folder, this is not recommended. This is because templates in your app folder take precedence over those found in the theme or vendor folders and thus cannot be modified by any other code. This can be useful in some circumstances but should generally be avoided by developers.
@@ -39,6 +40,7 @@ src
 _config.php
 ```
 The other directories and files in the app folder can be ignored as we will not need to alter them in this course.
+
 
 ## Preparing the app/src directory
 
@@ -66,18 +68,22 @@ Now we need to dev/build the SilverStripe site so SilverStripe updates its infor
 http://mysite.localhost/dev/build
 ```
 
+
 # _config/config.yml
 
 For now just note where this is. Some modules have configuration options which are set by a developer, if so you enter this here. This file will also be used in the advanced developer course when we come to do extensions.
+
 
 # _config.php
 
 This is another configuration file, as noted in the comment at the bottom, normally any SilverStripe config goes in the config.yml and not this file, however there are times when some PHP powered configuration is needed before your project can begin which cannot be applied via the YML files. An example might be increasing the memory_limit or execution_time with ini_set().  
 
+
 # Further reading/references
 
 * SilverStripe developer docs https://docs.silverstripe.org/en/4/
 * SilverStripe configuration https://docs.silverstripe.org/en/4/developer_guides/configuration/
+
 
 # Next
 

@@ -2,13 +2,16 @@
 
 To install the CWP version of SilverStripe its best to check the CWP page for instructions on how to do this. This page can be found here: <a href="https://www.cwp.govt.nz/developer-docs/en/2/getting_started/" target="\_blank">https://www.cwp.govt.nz/developer-docs/en/2/getting_started/</a>
 
+
 ## Prerequisites
 
 As detailed on the page there are some prerequisites such as having PHP, SQL database (such as mysql), and a web server like Apache2 to run the site. None of these are present on the training room computers so need to be installed.
 
+
 ### You need to install PHP, Apache, and MySQL
 
 [This is an excellent guide](https://www.digitalocean.com/community/tutorials/how-to-install-linux-apache-mysql-php-lamp-stack-on-ubuntu-16-04). Note that this is not the exact same environment as CWP, but it works very well for development.
+
 
 #### Apache
 
@@ -18,6 +21,7 @@ On CWP, Nginx is used as a proxy for requests to Apache. This is not applicable 
     sudo apt-get install apache2
 ```
 
+
 #### mod_rewrite
 
 SilverStripe requires mod_rewrite.  Activate it with Apache:
@@ -25,6 +29,7 @@ SilverStripe requires mod_rewrite.  Activate it with Apache:
 sudo a2enmod rewrite
 sudo service apache2 restart
 ```
+
 
 #### PHP
 
@@ -37,6 +42,7 @@ sudo apt-get install php php-curl php-gd php-mbstring php-mcrypt php-tidy php-in
 #developer tools
 sudo apt-get install php-xdebug php-cli
 ```
+
 
 #### Composer
 
@@ -65,12 +71,14 @@ sudo mv composer.phar /usr/local/bin/composer
 
 To check if the installation was successful, type "composer" in your terminal and press enter. Composer should output a list of options.
 
+
 #### Git
 
 Composer and the CWP service both depend on `git clone` to work. It should be installed on Ubuntu already, but if it is not then run this command:
 ```
 sudo apt-get install git
 ```
+
 
 #### MySQL
 
@@ -89,6 +97,7 @@ Set a root password.
 * [Y] Disallow root remotely, this is a development machine.
 * [Y] Remove test database and access.
 * [Y] Reload privilege tables
+
 
 ### Configuring your virtualhost
 
@@ -126,6 +135,7 @@ sudo a2ensite mysite.localhost
 sudo service apache2 restart
 ```
 
+
 ### /etc/hosts
 
 ```
@@ -133,6 +143,7 @@ sudo service apache2 restart
 #this should match your ServerName
 127.0.0.1   mysite.localhost
 ```
+
 
 ### Update Apache
 
@@ -144,6 +155,7 @@ Change priority of index.php to be left-most in `/etc/apache2/mods-enabled/dir.c
 ```
 Restart apache
 
+
 #### Other tips:
 Don't do this in a production environment!
 
@@ -152,6 +164,7 @@ Don't do this in a production environment!
     * Replace `User ${APACHE_RUN_USER}` with `User ubuntu`
     * Replace `Group ${APACHE_RUN_GROUP}` with `Group ubuntu`
     * Restart apache
+
 
 ### Test your setup
 
@@ -165,6 +178,7 @@ Delete this before proceding with your CWP setup
 rm -rf mysite
 ```
 
+
 ## Create your CWP project
 
 Assuming all your installation requirements are met, installing the CWP project can be done with a single command:
@@ -175,12 +189,14 @@ composer create-project cwp/cwp-installer mysite ^2
 
 This will take a while to run (~10 minutes)
 
+
 ### What's happening here
 
 * We're using composer to install CWP
 * `create-project` pulls a Github repository commonly known as a "recipe"
 * `cwp/cwp-installer` is the name of this recipe
 * `^2` means "install the most recent stable version of major release 2"
+
 
 ### Folder structure
 SilverStripe is modular - every piece of code you write is considered to be a module, including the contents of your `app` folder. 
@@ -195,6 +211,8 @@ mysite
     vendor
     .env
 ```
+
+
 ### app
 The "app" folder contains all of your PHP code and project-specific templates. You'll define any custom pagetypes, models, dataextensions, YML config, and other project-specific stuff in here. **Never** modify modules in the `vendor` folder directly, unless you're pushing changes back to a version controlled project.
 
@@ -205,6 +223,7 @@ The "public" folder contains all publicly visible assets. This includes document
 SilverStripe serves all requests to the web from the /public folder. All other parts of your codebase are protected from the webserver, which does not require direct publicly-accessible access to them. This is also where the CMS `assets` folder places files uploaded from the CMS.
 
 This entire folder should be readable by the webserver user.
+
 
 #### themes
 The "themes" folder is where your front-end theme (or multiple themes) will live. Your theme will "expose" JS, CSS, and other files to the public folder. Your site can use a single theme, or it can use multiple themes which "cascade" down to a base theme. 
@@ -225,6 +244,7 @@ SilverStripe\View\SSViewer:
 `$public` and `$default` are special cases of the theme loader that need to be included for historical reasons. Everything in the `themes` folder is symlinked to `public`, which contains public resources such as CSS, JS, and other web assets like fonts. . `$public` serves as a special type of theme that will take precedence over all others.
 
 `$default` is a fallback theme that all `framework` controllers use to render a skeleton layout
+
 
 #### vendor
 The CWP installer will set up your entire SilverStripe project for you. All required projects are installed to the `vendor` folder and (usually) never need to be modified by the developer. 
@@ -249,14 +269,17 @@ SS_DEFAULT_ADMIN_USERNAME and SS_DEFAULT_ADMIN_PASSWORD create a default adminis
 
 Don't forget to set SS_ENVIRONMENT_TYPE="dev" when you first install. It defaults to "live", which supresses all frontend website errors until changed.
 
+
 ## Building your database
 Run the following command from your `mysite` folder:
 `vendor/bin/sake dev/build flush=`
 
 You can also visit `http://mysite.localhost/dev/build?flush=` in a web browser. This may require an administrator login.
 
+
 ## Conclusion
 At this point, you should have CWP installed with a very basic theme, which is known as the "starter" theme. You can use this theme as a basis for your own custom frontend development, or you can install a new theme and build on top of it. We'll cover this more in a future slide
+
 
 ## Saving your work
 The CWP project includes a .gitignore file for files that don't need to be tracked, as well as some sensible defaults for .editorconfig and test suites. 
@@ -272,11 +295,13 @@ git commit -nM 'Intial commit'
 git push -u origin master
 ```
 
+
 ## Notes and Tips
 
 * On a real server, available to others, such as for your QA and live sites, you would not normally have a default login in the .env file, and especially not admin/pass. So ensure those 2 lines are not present in the file on your live site.
 * .env should not be checked in to source control, you would create this file on each server/environment where your website is deployed as the DB connection information will likely be different with a specific user and password for the database of the site (again not root/password either).
 * .env should only be used when the site is in `dev` mode. In a production environment, these should be set as system environment variables instead. You can do this with SetEnv in your apache virtualhost.
+
 
 ## Further reading/references
 

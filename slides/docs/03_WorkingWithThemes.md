@@ -4,6 +4,7 @@ The next step in SilverStripe development is choosing which theme you will base 
 
 Out of the box, with the standard SilverStripe CWP install you only get a "Starter" theme which is intended for agencies creating websites for larger organisations with a strong brand etc where lots of customisations will happen, another option is the Wātea theme - this is an enhancement to the Starter theme and is more fully featured, but more tricky to alter since you have to understand where to place the new files and make changes you want.
 
+
 ## Wātea
 Wātea is a "subtheme" for CWP built on top of the starter theme. To install it, you need to add two more modules to your CWP project:
 
@@ -24,6 +25,7 @@ SilverStripe\View\SSViewer:
     - '$default'
 ```
 
+
 ### What's happening here
 Wātea is a prime example of a _cascading theme_. When SilverStripe receives a web request and renders it, will first look to the `$public` folder for available templates, icons, fonts, JS, CSS or other web assets. If it does not find what it needs there, it will "cascade" down to the next available theme, which is watea
 
@@ -32,6 +34,7 @@ Watea contains an "enhance" set of templates for navigation, header, search, and
 "starter" is where most of your base layer templates will exist. SilverStripe should never be missing a template for a frontend user request at this point, with one notable exception:
 
 "$default" contains framework level templates, which is responsible for rendering content such as developer errors, stack traces, and barebones text from a controller. It also handles the content under the /dev URL. The most famous example that users will directly experience is the /Security/login screen.
+
 
 ### More about Wātea
 
@@ -51,14 +54,15 @@ SilverStripe\SiteConfig\SiteConfig:
 Other options for the colour picker can be found [here](https://github.com/silverstripe/cwp-agencyextensions/blob/2.1.2/docs/en/01_Features/ThemeColors.md)
 
 
-
 ### Advantages
 You end up with a highly customiseable theme, aesthetically pleasing, and fully accessible theme built on top of CWP components. Very few websites ever require no customisation at all, but with Wātea's diverse set of features, you may be happy with the out of the box experience with little to no development experience.
+
 
 ### Disadvantage
 Wātea is based on Bootstrap 3. If this is a problem for you, you'll need to create your own theme.
 
 Support is difficult, because you can no longer automatically manage the project with composer once you have made changes to it. As I said, it is very rare for an agency to *never* make a single change to their theme. If you want to build off of Watea, consider the following options
+
 
 ### Workarounds
 * Create a third theme, which cascades down to Wātea and then Starter. Your theme replaces any component found in Wātea; however, you are now responsible for building your own Javascript and CSS. The best way to handle this is to copy the watea folder, paste it into the same directory, then rename the theme to something you own. Delete the `.git` folder in your new copy, re-initialise with `git init`, and manage the new theme yourself with composer.json in the parent project. This creates a version of Wātea that you manage yourself, but you need to take care that nothing in this folder conflicts with behaviour in the previous two modules. 
@@ -66,10 +70,6 @@ Support is difficult, because you can no longer automatically manage the project
 * Delete the `.git` folder from starter and watea. Add the entire contents of these folders to the version control in the parent project. You can now make your own changes to your website themes without concern for what the upstream branch is doing. However, this may not be desireable for the same reason - you can no longer depend on updates from the upstream branch. Theme and feature updates are now your responsibility
 
 * Don't use either theme. Choose a different one, or create your own.
-
-
-
-
 
 
 ## Creating our own theme
@@ -99,9 +99,11 @@ themes
       
 ```
 
+
 The top-level Page contains the "global" layout of any request made to the site. When a user visits a Page, or anything that descends from a Page, they'll see this global layout. Usually this page contains site-wide variables like $SiteConfig or $CurrentUser. This is usually where you will place Header and Footer content. Most importantly, will include the $Layout variable, which generally contains Content and things related to a specific page record. 
 
 `yourtheme` might also contain front-end assets that you've generated using a build tool like gulp or webpack. These tools manage things like js and scss source files, as well as the compiled output into a `dist` directory, which is then exposed to the `public` portion of the website. We will cover this `dist` mechanism briefly, but build topics are a very complex topic outside the scope of this course.
+
 
 ## Installing your theme
 There's generally two ways to do this:
@@ -114,10 +116,12 @@ Either approach is valid. For the sake of this training course, I will include t
 1. Replace "starter" and "watea" with "mytheme" (or whatever you've named your folder) in `app/_config/theme.yml`
 2. Run a dev/build?flush=1 to view your changes
 
+
 ## Getting started
 
 Let's create an example from the Bootstrap 4 starter template:
-```
+
+```html
 <!doctype html>
 <html lang="en">
   <head>
@@ -149,9 +153,11 @@ Let's create an example from the Bootstrap 4 starter template:
 </html>
 ```
 
+
 I have also included two templates for Navigation and Footer, which separates those concerns into their own templates. 
 
-```
+
+```html
 #Navigation.ss
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
   <a class="navbar-brand" href="$BaseHref">$SiteConfig.Title</a>
@@ -176,7 +182,8 @@ I have also included two templates for Navigation and Footer, which separates th
 </nav>
 ```
 
-```
+
+```html
 #Footer.ss
 
 <ul class="nav justify-content-end">
@@ -193,7 +200,8 @@ I have also included two templates for Navigation and Footer, which separates th
 </ul>
 ```
 
-```
+
+```html
 #Layout/Page.ss
 $Content
 $Form
@@ -208,6 +216,7 @@ You may have noticed that our "Page" template corresponds with our "Page" class,
 SilverStripe 4 introduced namespaced classes, which required some fairly significant changes to existing themes. Themes now utilise a folder structure to mimic namespaces.
 
 Templates defined on your theme can replace those defined in a module. For example, if you wanted to overload the Blog template with your own design, you can do this by copying the template (including the folder structure) to the templates folder of your theme:
+
 ```
 themes
     yourtheme
@@ -219,6 +228,7 @@ themes
                             BlogPost.ss
 
 ```
+
 
 Any changes you make to your themed version of the template will take precedence over templates defined on the module. However, you must ensure that the folder structure matches that of the module exactly. This can be confusing to new developers, but once this convention is learned it can be a powerful tool. One common use-case for this is redefining the EdiableFormField templates for the userforms module to include Bootstrap styling.
 
@@ -234,11 +244,11 @@ themes
             Security_resetpassword.ss
 ```
 
+
 # Further reading/references
 
 * SilverStripe add ons http://addons.silverstripe.org
 * Working with the starter theme https://www.cwp.govt.nz/developer-docs/en/2/working_with_projects/customising_the_starter_theme
-
 
 
 ## Conclusion
