@@ -1,4 +1,4 @@
-# Creating a New Page Template
+# Creating a New Landing Page Template
 
 In the last lesson, we did basically the minimum to create a new page type in the CMS; we created the Model and the Controller classes part of the MVC design pattern. In this lesson we will discuss how the page templates the V part work in SilverStripe.
 
@@ -8,8 +8,7 @@ Set the page name to "Attractions" then save and publish the page.
 
 ## TIP - turning the preview off
 
-By default the preview pane is turned on the SilverStripe CMS, I don't like it as sometimes it can lie (as in not be a 100% accurate reflection of how the page looks in the front end), and also because with 4 panes
-things on the screen can get a little cramped.
+By default the preview pane is turned on the SilverStripe CMS, I don't like it as sometimes it can lie (as in not be a 100% accurate reflection of how the page looks in the front end), and also because with multiple panes things on the screen can get a little cramped.
 
 To turn the preview pane off, we can swap from Split Mode to Edit mode using a little Mode Switcher control down at the bottom-right of the screen. Hover over the icons down there an you should see a tool tip on one saying "Change View mode". Click on it to bring up a popup menu, then choose "Edit mode" from the list.
 
@@ -21,7 +20,7 @@ Now things should look a little better. You can still check how the page looks i
 
 As you should have seen when looking at the Landing Page you created called Attractions, it displays fine in the front-end of the site, the menus, title, content, and footer were all output, but why is this when we did not create a template file for this page type? Its because the templates in SilverStripe have some smarts where it will fallback to Page.ss if a specific page template is not found.
 
-# Creating a LandingPage template file
+## Creating a LandingPage template file
 
 Normally for each type of page you create in the site, as well as the PHP file with the Model and Controller Classes, you create a template (view) file with a .ss extension because normally you want different types of pages to display different things on them.
 
@@ -32,7 +31,7 @@ So lets create the template file. This is where the themes directory and the cop
 * Go in to the themes/museum/templates/Layout directory
 * Create a new file (in Atom right-click on the Layout folder and choose 'New file')
 * Call it LandingPage.ss
-* Its very important the filename matches the name of the PHP class you want the template to be for, if the names do not match then the template will not be detected or used for the page.
+* Its very important the filename matches the name of the PHP class you want the template to be for, if the names do not match then the template will not be detected or used for the page. If the class exists inside of a namespace, you will need ot use folders to mimic that space: (i.e. templates/YourNamespace/YourProject/PageType/Layout/SomePage.ss)
 
 Now we can add the HTML to the template, but first let me explain...
 
@@ -40,7 +39,7 @@ Now we can add the HTML to the template, but first let me explain...
 
 Slightly confusingly there are 2 files called Page.ss in play in a SilverStripe site. The first, located in themes/starter/Page.ss, defines the structure for all pages in the site, it contains the opening HTML tag, the head section, includes the Header and Navigation, then includes - and remember this - the $Layout, and finally the footer, Google Analytics code, and closing HTML tags are output.
 
-The second Page.ss file is in templates/Layout/Page.ss and is the layout for the generic Page type. The HTML defined in this file is included in the first Page.ss where the $Layout variable is located when the site is rendered.
+The second Page.ss file is in templates/Layout/Page.ss and is the layout for the generic Page type. The HTML defined in this file is included in the first Page.ss where the $Layout variable is located when the site is rendered. If you think of it as a sandwitch, the top-level Page.ss is the bread and the Layout/Page.ss is the filling. Layout represents the content of our Page or one of the Page subclasses.
 
 Similarly for the Landing Page the LandingPage.ss template will be rendered where the $Layout variable appears in the Page.ss
 
@@ -56,7 +55,7 @@ For this its best to open the themes/starter/templates/Layout/Page.ss and copy e
 
         <% if $Content.RichLinks %>
             $Content.RichLinks
-        <% else %>
+        <% eld_if %>
 ```
 
 Now save the changes to this file. Time for another dev/build, this time it is required for SilverStripe to detect the template file as it seems to keep a record of which ones exist and this is only updated when a dev/build is done.
@@ -82,8 +81,6 @@ Now back in to the template code, the LandingPage.ss, remove that paragraph adde
 ```
 
 Save the change to the template file, dev/build, and then look at the Attractions landing page in the front-end of the site. You should see the 3 child pages listed with their title, the first 50 characters of the content, and a 'Read more...' link. If you click the link it should take you to the child page.
-
-![Landing page children](img/05_landing-page-children.png "Landing page children")
 
 # Template conditional and loops
 
@@ -123,7 +120,7 @@ Conditionals are defined in the same way, with these anglebracket-percent tags. 
 <% end_if %>
 ```
 
-As expected you can test if something equals or does not equal a condition, but note that "not" must be used rather than != for comparison. Also you can do greater than, less than tests with <, <=, >=, >
+As expected you can test if something equals or does not equal a condition. You can use "not" or "!=" for this purpose. Also you can do greater than, less than tests with <, <=, >=, >
 
 ```html
 // Equals
@@ -145,6 +142,7 @@ As expected you can test if something equals or does not equal a condition, but 
 ## Boolean logic
 
 Also as expected, you can do boolean logic, for example requiring that 2 conditions are met before displaying something, or you can do an OR to display something if only 1 condition is set.
+
 The double ampersand && means "and", the double pipe / vertical bar || means "or".
 
 ```html
@@ -167,18 +165,41 @@ There is also a lot more you can do in the templates, keep these in mind for lat
 * Includes
 * Calling functions
 
-# Overriding templates
-
-@TODO 2018-03-07: This topic needs expanding.
+## Overriding templates
 
 How overriding templates works needs to be discussed as important to know how to override core and module templates for pages etc. For now more details are at the link below...
 
-https://docs.silverstripe.org/en/3/developer_guides/templates/template_inheritance/
+https://docs.silverstripe.org/en/4/developer_guides/templates/template_inheritance/
 
-# Further reading/references
 
-* SilverStripe template syntax https://docs.silverstripe.org/en/3/developer_guides/templates/syntax/
-* Common template variables https://docs.silverstripe.org/en/3/developer_guides/templates/common_variables/
+## Adding Data fields to your template
+
+Open Layout/LandingPage.ss. Add the following before the `<% loop Children %>` segment of your template:
+```html
+<div class="container-fluid">
+  <div class="row">
+    <div class="col">
+      $Content
+    </div>
+  </div>
+
+  <% if SpecialContentHeadline && SpecialContent %>
+    <h3>$SpecialContentHeadline</h3>
+    <div>$SpecialContent</div>
+    <hr />
+    <p class="text-center">$CurrentDateTime</p>
+  <% end_if %>
+</div>
+```
+Refresh the page - you probably don't see anything. That's because we haven't built our new database columns or added any data yet!  
+
+In our next section, we will learn how to add some database fields to our Landing Page, and modify them using the CMS using some particular fields. We will also learn what a "Getter" method is and how they work.
+
+## Further reading/references
+
+* SilverStripe template syntax https://docs.silverstripe.org/en/4/developer_guides/templates/syntax/
+* Common template variables https://docs.silverstripe.org/en/4/developer_guides/templates/common_variables/
+
 
 # Next
 
