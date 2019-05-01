@@ -55,15 +55,16 @@ Students should have some experience with PHP, HTML, and CSS. Experience with Gi
 
 These are the lessons for the course (in the docs folder). Throughout the lessons we we be building a small Museum website to get hands-on experience developing in SilverStripe.
 
-* [Installing CWP SilverStripe](docs/01_InstallingCWPSilverStripe.md)
-* [Project Structure](docs/02_SiteProjectStructure.md)
-* [Working with themes](docs/03_WorkingWithThemes.md)
-* [Creating a new Page Type](docs/04_CreatingANewPage.md)
-* [Creating a page Template](docs/05_CreatingATemplate.md)
-* [Introduction to CMS fields](docs/06_IntroToCMSFields.md)
-* [Installing a Module](docs/07_InstallingAModule.md)
-* [Writing DataExtensions](docs/08_WritingDataExtensions.md)
-* [Creating forms - Booking](docs/09_WritingForms.md)
+* [Introduction](slides/docs/introduction.md)
+* [Installing CWP SilverStripe](slides/docs/01_InstallingCWPSilverStripe.md)
+* [Project Structure](slides/docs/02_SiteProjectStructure.md)
+* [Working with themes](slides/docs/03_WorkingWithThemes.md)
+* [Creating a new Page Type](slides/docs/04_CreatingANewPage.md)
+* [Creating a page Template](slides/docs/05_CreatingATemplate.md)
+* [Introduction to CMS fields](slides/docs/06_IntroToCMSFields.md)
+* [Installing a Module](slides/docs/07_InstallingAModule.md)
+* [Writing DataExtensions](slides/docs/08_WritingDataExtensions.md)
+* [Creating forms - Booking](slides/docs/09_WritingForms.md)
 
 ## Primary trainer
 
