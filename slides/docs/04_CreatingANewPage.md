@@ -551,7 +551,7 @@ Note with DataObjects there is no common table like there is with pages and the 
 We will look at the database more throughout this course as we create DataObjects, relations, and more CMS fields. The SilverStripe docs linked below contain heaps of information about the ORM.
 
 
-## Further reading
+### Further reading
 * Some helpful links
   + How to create pages in the CMS https://userhelp.silverstripe.org/en/4/creating_pages_and_content/pages/
   + SilverStripe ORM and data model https://docs.silverstripe.org/en/4/developer_guides/model/
@@ -559,6 +559,6 @@ We will look at the database more throughout this course as we create DataObject
   + Injector: https://docs.silverstripe.org/en/4/developer_guides/extending/injector/
 
 
-# Next
+### Next
 
 [Lesson 05 - Creating a landing page template](05_CreatingATemplate.md)
