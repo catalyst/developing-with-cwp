@@ -1,3 +1,6 @@
+# Installing SilverStripe
+
+
 ## Installing CWP SilverStripe
 
 * To install the CWP version of SilverStripe its best to check the CWP page for instructions on how to do this. This page can be found here: <a href="https://www.cwp.govt.nz/developer-docs/en/2/getting_started/" target="\_blank">https://www.cwp.govt.nz/developer-docs/en/2/getting_started/</a>

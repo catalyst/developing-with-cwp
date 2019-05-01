@@ -1,3 +1,6 @@
+# Project structure
+
+
 ## SilverStripe project structure
 
 * In this lesson we will look at the code structure of the site/project. Lets open the root directory of the site in Atom so we can browse the folder and file structure.
