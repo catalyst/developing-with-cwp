@@ -254,7 +254,7 @@ For example
     + `<% include SomeTemplate SomeValue=XXXXX,SomeOtherValue=YYYY %>`
 
 
-## Further reading/references
+## Further reading
 
 * More info:
     + SilverStripe template syntax https://docs.silverstripe.org/en/4/developer_guides/templates/syntax/
