@@ -33,7 +33,7 @@ We'll add a new action that is accessible to all published userforms
 Add the following file to app/Extension/KiaOra.php
 ```php
 use SilverStripe\ORM\DataExtension;
-class KiaOra extends DataExtension
+class KiaOraExtension extends DataExtension
 {
     private static $allowed_actions = ['kiaora'];
     public function kiaora($request) 
@@ -49,7 +49,7 @@ Add this to app/_config/config.yml
 ```yml
 SilverStripe\UserForms\Control\UserDefinedFormController:
   extensions:
-    - 'KiaOra'
+    - 'KiaOraExtension'
 ```
 
 

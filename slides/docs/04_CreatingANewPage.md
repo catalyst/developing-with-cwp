@@ -92,7 +92,7 @@ While we focus on CWP here, the lessons learned are applicable to all SilverStri
 
 ### Creating the landing page
 
-* _app/src/PageType/Page.php_
+* _app/src/PageType/LandingPage.php_
 
 ```php
 class LandingPage extends Page {
@@ -103,7 +103,7 @@ class LandingPage extends Page {
 
 You will also need to create your controller
 
-* _app/src/Controller/PageController.php_
+* _app/src/Controller/LandingPageController.php_
 
 ```php
 class LandingPageController extends PageController {

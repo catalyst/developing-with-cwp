@@ -188,6 +188,7 @@ Add this before the redirect back line, update the email address to yours:
 
 ```php
 // The information submitted in the form is in $data. Lets send it to ourselves via email.
+$body = '';
 foreach($data as $key => $val) {
     $body .= "\n" . $key . " : " . $val;
 }

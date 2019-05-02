@@ -106,23 +106,23 @@ private static $db = [
 
 
 ### LandingPage: Add some new CMS fields to a tab
-To insert new CMS fields for us to edit, we need to define a method and get the fields from the parent class. We will then add a field called a _ToggleCompositeField_, to contain our new fields, and add them to a new Tab on the HomePage record.
+To insert new CMS fields for us to edit, we need to define a method and get the fields from the parent class. We will then add our new fields, and add them to a new Tab on the HomePage record.
 
 
 ### LandingPage: Add some new CMS fields to a tab
 Example:
 ```php
+use SilverStripe\Forms\HTMLEditor\HTMLEditorField;
+use SilverStripe\Forms\TextField;
 public function getCMSFields() {
   $fields = parent::getCMSFields();
 
-  $fields->addFieldToTab(
+  $fields->addFieldsToTab(
     'Root.SpecialContent',
-    ToggleCompositeField::create(
-      'SpecialContentFieldArea', [
+    [
         TextField::create('SpecialContentHeadline'),
         HTMLEditorField::create('SpecialContent')
-      ]
-    )
+    ]
   );
 
   return $fields;
@@ -132,15 +132,6 @@ public function getCMSFields() {
 
 ### LandingPage: Add some new CMS fields to a tab
 This is an excellent example of inheritance in action: LandingPage::getCMSFields obtains fields from Page::getCMSFields and injects its own set of fields into the result. This means that LandingPage automatically receives the "Intro" field without any additional development on our part.
-
-
-### LandingPage: Add some new CMS fields to a tab
-Tip:  You'll need to add some `use` statements to the top of your class for PHP to recognise the classname:
-```php
-use SilverStripe\Forms\HTMLEditor\HTMLEditorField;
-use SilverStripe\Forms\TextField;
-use SilverStripe\Forms\ToggleCompositeField;
-```
 
 
 ### LandingPage: Add some new CMS fields to a tab
@@ -197,12 +188,7 @@ Example
 ### Updating LandingPage.ss
 Also in Layout/LandingPage.ss, add the following before the `<% loop Children %>` segment of your template:
 ```html
-<div class="container-fluid">
-  <div class="row">
-    <div class="col">
-      $Content
-    </div>
-  </div>
+... place at the bottom of the "section" tag containing $Content"...
 
   <% if SpecialContentHeadline && SpecialContent %>
     <h3>$SpecialContentHeadline</h3>
@@ -210,7 +196,7 @@ Also in Layout/LandingPage.ss, add the following before the `<% loop Children %>
     <hr />
     <p class="text-center">$CurrentDateTime</p>
   <% end_if %>
-</div>
+
 ```
 
 

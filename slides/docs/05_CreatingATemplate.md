@@ -118,7 +118,7 @@ First in the cms we should add 3 child pages, of the type (generic) Page. For no
 ### Listing child pages
 Now back in to the template code. Open Layout/LandingPage.ss. Remove the statement "this is the landing page", since it was only a test.
 
-Now its time to loop through and output the child pages of this landing page by adding this code inside the main `<section>` area, below the $Content area.
+Now its time to loop through and output the child pages of this landing page by adding this code inside the  `<aside>` area. Since we're using Watea, this will create a floating menu to the right.
 
 
 ### Listing child pages
