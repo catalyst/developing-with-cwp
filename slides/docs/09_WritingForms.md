@@ -10,7 +10,7 @@ This will show you how to create and process forms in code.
 
 ## Landing Page enquiry form
 
-Before we begin, it's worth mentioning that there is the UserForms feature of CWP SilverStripe allowing CMS users to create their own forms.
+Before we begin, it's worth mentioning that there is the UserForms module with works with all SilverStripe installations, including CWP. This allows users to create and their own forms within the CMS without asking for a developer to create one for them.
 
 However, there will always be a time where a custom form is necessary to do something that userforms cannot. 
 
@@ -23,7 +23,7 @@ There are a few steps to get the form set up, these all happen in the LandingPag
 
 ## Allowed Actions
 
-First I need explain $allowed_actions which is an array in our controller classes which controls what methods in the controller can be accessed by people using your website to ensure that if they know the URL to the page and method they can't run things they are not allowed to.
+First I need explain $allowed_actions. Recall from our previous lessons that this is a whitelist: only methods defined on the controller will be allowed to run via a URL.
 
 
 ### allowed_actions
@@ -47,9 +47,9 @@ This is expected. We have not allowed access to this method using the allowed ac
 As a test, let's make it so only admins can access the page. Add this code below to the LandingPageController (or edit the exiting empty $allowed_actions array)
 
 ```php
-private static $allowed_actions = array(
+private static $allowed_actions = [
     'EnquiryForm' => 'ADMIN'
-);
+];
 ```
 
 
@@ -66,9 +66,9 @@ This SilverStripe docs page explains $allowed_actions https://docs.silverstripe.
 ### The enquiry form
 Example:
 ```php
-private static $allowed_actions = array(
+private static $allowed_actions = [
     'BookingEnquiryForm'
-);
+];
 ```
 
 
@@ -77,12 +77,12 @@ private static $allowed_actions = array(
 Now lets look at creating the form in code, we will do this inside the EnquiryForm function. There are a few parts to form creation, these are as follows...
 
 ```php
-$form = new Form(
+$form = Form::create(
     $controller,        // the Controller to render this form on
     $name,              // name of the method that returns this form on the controller
     FieldList $fields,  // list of FormField instances
     FieldList $actions, // list of FormAction instances
-    $required           // optional use of RequiredFields object
+    RequiredFields::create()           // optional use of RequiredFields object
 );
 ```
 
@@ -90,6 +90,7 @@ $form = new Form(
 ### Form creation in code
 In practise creating our Enquiry from looks like this, add this to the LandingPageController...
 
+<small class="w-100">
 ```php
 use SilverStripe\Forms\EmailField;
 use SilverStripe\Forms\TextareaField;
@@ -99,7 +100,7 @@ use SilverStripe\Forms\Form;
 public function EnquiryForm()
 {
     // Create the fields to go on the form.
-    $fields = new FieldList(
+    $fields = FieldList::create(
         TextField::create('Name', 'Your Name'),
         TextField::create('Company', 'Company or Organisation'),
         EmailField::create('Email', 'Email Address'),
@@ -107,18 +108,18 @@ public function EnquiryForm()
     );
 
     // Create the form actions - i.e. submit buttons.
-    $actions = new FieldList(
+    $actions = FieldList::create(
         FormAction::create('doEnquiryForm')->setTitle('Send enquiry')
     );
 
     // Specify the required fields.
-    $required = new RequiredFields(array(
+    $required = RequiredFields::create([
         'Name',
         'Email'
-    ));
+    ]);
 
     // Finally put all this together and create the form.
-    $form = new Form(
+    $form = Form::create(
         $this,
         'EnquiryForm',
         $fields,
@@ -129,8 +130,8 @@ public function EnquiryForm()
     // Return the form.
     return $form;
 }
-```
-
+    ```
+</small>
 
 ## Adding the form to the Template
 
@@ -184,7 +185,7 @@ Before we begin, log into the CMS and visit the ManagedEmails section. Create a 
 
 
 ### Processing submitted form data
-Add this before the redirect back line, update the email address to yours:
+Replace the `$this->redirectBack()` line with this logic:
 
 ```php
 // The information submitted in the form is in $data. Lets send it to ourselves via email.
@@ -227,8 +228,32 @@ echo "<p>" . nl2br($body) . "</p>";
 
 
 ### Processing submitted form data
-Alternatively, you can configure SilverStripe's SwiftMailer class to send emails through a properly configured SMTP server or using an API mailing service, such as MailGun or MailChimp. See the "further reading" section for more info on this.
+Alternatively, you can configure SilverStripe's SwiftMailer class to send emails through a properly configured SMTP server or using an API mailing service, such as MailGun or MailChimp. For example...
 
+
+### Using an email provider
+Here is an example using MailGun, which uses Injector to read environment variables and pass them into a new instance of `Swift_SmtpTransport`
+<small class="w-100">
+```
+---
+Name: myemailconfig
+After:
+  - '#emailconfig'
+---
+SilverStripe\Core\Injector\Injector:
+  Swift_Transport:
+    class: Swift_SmtpTransport
+    properties:
+      Host: '`MAILGUN_SMTP_HOSTNAME`'
+      Port: 587
+      Encryption: tls
+    calls:
+      Username: [ setUsername, ['`MAILGUN_SMTP_USERNAME`'] ]
+      Password: [ setPassword, ['`MAILGUN_SMTP_PASSWORD`'] ]
+SilverStripe\Control\Email\Email:
+  send_all_emails_from: 'do-not-reply@mail.example.com'
+```
+</small>
 
 ### Further reading/references
 
@@ -238,6 +263,6 @@ Alternatively, you can configure SilverStripe's SwiftMailer class to send emails
 
 
 ## Any last questions?
-Thank you for your time!  Alison has some feedback forms for you to fill out. Feedback helps us improve the slides and also helps the trainers learn.  
+Thank you for your time!  Alison has some feedback forms for you to fill out. Feedback helps us improve the slides and also helps the trainers learn.  Please leave them on your desk before you go, or with reception on your way out.
 
 The slides will be published online soon, and emailed to you when they are ready!

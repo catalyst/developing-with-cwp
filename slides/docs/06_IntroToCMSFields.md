@@ -3,7 +3,7 @@
 
 
 ## Introduction to CMS fields
-In this lesson I will introduce you to the database model and how to add fields in to the CMS for users to enter some information. We will then utilise these new fields on the landing page to make it even better.
+In this lesson I will introduce you to the database model and how to add fields into the CMS for users to enter some information. We will then utilise these new fields on the landing page to make it even better.
 
 
 ### Adding an Intro field to Page.php
@@ -16,7 +16,7 @@ The intro field will be plain text, and have a shorter length that the Content f
 
 
 ### Adding an Intro field to Page.php
-The steps to adding the field are 2 fold, the first is to add is as a property of the Page class using the $db array, the next is adding a field to the CMS for the user to enter the information, so..
+The steps to adding the field are 2 fold, the first is to add a property on the Page class using the $db array. We will also add a field to the CMS for the user to enter the information.
 
 
 ### Adding an Intro field to Page.php
@@ -146,7 +146,7 @@ Do a `dev/build?flush=` and open your LandingPage in the CMS.  You will now see 
 ### Make a getter method
 * Inside our special content area, we want to display the current date and time at the bottom of the section
 * This is not database content - it's some other arbitrary data that we can query from any source and display the result
-* We can do this by defining a _getter method_, which can be summoned from the HomePage template and and class that descends from it:
+* We can do this by defining a _getter method_, which can be summoned from the HomePage template and class that descends from it:
 
 
 ### Make a getter method

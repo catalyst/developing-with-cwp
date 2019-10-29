@@ -16,7 +16,7 @@ An extension is a PHP class that "decorates" the classes in other modules with a
 ### Extensions and DataExtensions
 * What extensions can't do:
     - replace existing methods, or remove them
-    - remove existing database columns (but it can remove their CMS fields)
+    - remove existing database columns (but it can remove their CMS fields...usually)
     - modify methods without a hook
 
 
@@ -91,6 +91,7 @@ We'll write an extension to add a CopyrightStatement field to the SiteConfig, wh
 
 ### Adding new Database columns and fields
 Create app/Extension/SiteConfigExtension.php:
+<small class="w-100">
 ```php
 use SilverStripe\ORM\DataExtension;
 use SilverStripe\Forms\TextField;
@@ -112,9 +113,8 @@ class SiteConfigExtension extends DataExtension
         return $this->owner->Title . $this->owner->CopyrightStatement;
     }
 }
-
-```
-
+    ```
+</small>
 
 ### Adding new Database columns and fields
 

@@ -6,11 +6,15 @@ In this lesson, we'll demonstrate what PageTypes are and how you can use them. W
 
 
 ## Before we begin
-* Since this is a CWP developer course, we're going to continue our lesson by teaching to CWP features. Let's switch back to the Watea theme:
+We are using CWP here to demonstrate how to use a collection of modules to solve a problem well. The lessons learned are applicable to all SilverStripe development, not just CWP.
+
+
+## Reset your theme to Watea
+We're going to continue our lesson using the CWP module. Let's switch back to using the Watea theme:
 
 ```
-    composer require cwp/watea-theme 2.1
-    composer require cwp/agency-extensions ^2.1
+    composer require cwp/watea-theme ^2
+    composer require cwp/agency-extensions ^2
 ```
 
 
@@ -28,12 +32,10 @@ SilverStripe\View\SSViewer:
     - '$default'
 ```
 
-While we focus on CWP here, the lessons learned are applicable to all SilverStripe development.
-
 
 ## Existing page types
 
-* In this lesson we will create our first new page type for use in the site, but first its probably best to look at what page types come out of the box in CWP SilverStripe as there are a lot. 
+* In this lesson we will create our first new page type for use in the site, but first its probably best to look at what page types come out of the box. CWP adds a lot of them. 
 
 * The best way to see a list of them is to log in to the CMS of our site but putting /admin on the end of the base url, i.e. http://mysite.localhost/admin then log in with "admin" and "password".
 
@@ -69,18 +71,18 @@ While we focus on CWP here, the lessons learned are applicable to all SilverStri
 
 
 ### Existing page types
-* As you can see this gives you a lot out of the box; Basic pages, News, Events, Sitemap etc.
-* There is also the Blog pages if that is something you are interested for you site.
+* Sitemap: a full index of your website, which is useful for accessibility and SEO reasons.
+* Blog and Blog Post: commonly used in place of news articles on sites without events
 
 
 ## The landing page
 * One main thing which is missing, and that we will be creating now, is a Landing type of page for each section of your website. 
-* This page will sit adjacent to the home page in the site tree, but above the general content pages. The plan for this landing page is to list the pages underneath, so providing an easy way for people to navigate your site.
+* This page will sit adjacent to the home page in the site tree, but above the general content pages. The plan for this landing page is to list the pages underneath, which provides an easy way for people to navigate your site.
 
 
 ### Creating the landing page
 
-* Normally new page types you create inherit from the "Page" (generic) page type. An easy way to get going is to duplicate the content of app/src/PageTypes/Page.php into LandingPage.php.  
+* Normally new page types you create inherit from the "Page" (generic) page type. An easy way to get going is to copy the content from app/src/PageTypes/Page.php into LandingPage.php.  
 
 * Create a new file in your favourite editor and copy and paste in the code from the Page.php into LandingPage.php. 
 
@@ -120,7 +122,7 @@ class LandingPageController extends PageController {
 
 ### Page Class and Controller class explained
 * The code for these three things are in separate files:
-  + one file for the Model (think of this as the database structure)
+  + one file for the Model (think of this as the database layer)
   + one file for the View (the code to render the HTML)
   + one file for the Controller (contains the business logic, connects the DB model with the view).
 
@@ -194,19 +196,19 @@ private static $description = 'For each main section of the website';
 ### Adding a description 
 * Run dev/build again in your browser
   + we will be doing this a lot so I like to keep a browser tab open with the /dev/build URL
-* Reload the Add New Page in the CMS and you should see the Landing Page in the list now has a nice description like the out of the box pages included in SilverStripe and CWP.
+* Reload the Add New Page in the CMS. You will now see the Landing Page in the list, along with the description we provided.
 
 
 ### Adding a description 
 ![Landing Page Description](docs/img/04_add-landing-page.png "Landing page description")
 
 * You have just created your very first page type.
-* But wait a minute... what about the V part of MVP? We'll get to that we a little while
+* But wait... that's only a model and a controller! Where's the view?  More on that soon...
 
 
 ## ORM
 
-* Let's talk about the ORM and database structure.
+* First, let's talk about the ORM and database structure.
 
 * SilverStripe uses an ORM system for the database
 * ORM stands for Object Relational Model
@@ -221,9 +223,9 @@ private static $description = 'For each main section of the website';
 
 ### ORM
 
-* The ORM system means that as a developer, you can write high level code to create, read, update, delete (CRUD) 
-* You do not need to write raw SQL or build sql queries using "Active Record" style syntax
-  + Should you require advanced queries or raw syntax, you are still allowed the flexibility to do this
+* The ORM system means that as a developer, you can write high level code to create, read, update, and delete. Known as CRUD, these are the four basic functions of database storage. 
+* You do not need to write raw SQL or build sql queries, though you can if you need to.
+* Uses "Active Record" style syntax
 
 
 ### How to use the ORM
@@ -239,13 +241,19 @@ $homepage = HomePage::get()->first();
 //get all pages, sorted by most recently edited first
 Page::get()->sort('LastEdited DESC'); 
 
-//get 10 most recently edited pages, with titles that Start with A and do not end with S
+//get 10 most recently edited pages, with titles that:
+//* Start with A
+//* do not end with S
 Page::get()
   ->filter('Title:StartsWith', 'A')
   ->exclude('Title:EndsWith', 'S')
   ->sort('LastEdited DESC')
   ->limit(10);
+```
 
+
+### How to use the ORM (continued)
+```php
 //get page with ID#12
 Page::get()->byID(12);
 
@@ -257,8 +265,11 @@ $quicklinks->Count();
 ```
 
 
-### Using the ORM
-* The ORM also supports more advanced features, such as `innerJoin`, `leftJoin` and `where` to write complex queries if required, which is rare.
+### Advanced ORM and raw queries
+* The ORM also supports more advanced features, such as `innerJoin`, `leftJoin` and `where` to write complex queries if required
+* These are rare, but there are good reasons for using them, such as performance tuning.
+* SilverStripe reports and dashboards often use raw queries where data is complex and the ORM is impractical.
+
 
 
 ### Using the ORM
@@ -269,14 +280,19 @@ $quicklinks->Count();
 
 
 ### Using the ORM
-The benefits of using the ORM are that as well as it making your development quicker and easier
-* It allows other code to hook in to different events, such as onBeforeWrite or onAfterDelete
-* You can even change the underlying database your site runs on.
-* Need to change from MySQL to Postgres or SQLite? No problem.
+* The ORM has many benefits:
+  * it makes your development quicker and easier
+  * It allows other code to hook in to different events, such as onBeforeWrite or onAfterDelete
 
 
 ### Using the ORM
-Because SilverStripe creates and maintains the database structure, this is why its necessary to run dev/build after creating, removing, or altering a class or its properties so the DB tables and columns stay in sync with what is defined in the code.
+ You are not restricted to database technologies:
+* You can even change the underlying database your site runs on.
+* Need to change from MySQL to Postgres? Or MSSQL? or SQLite? No problem!
+
+
+### Using the ORM
+Because SilverStripe creates and maintains the database structure for you, it is necessary to run dev/build after creating, removing, or altering a class or its properties. The database tables and columns stay in sync with what is defined in the code.
 
 
 ## Back to dev/build
@@ -299,7 +315,14 @@ The task compares the current database to the classes defined in code and will p
 * A few important things to note
   + The task won't delete tables or delete columns from tables no longer used.
   + It will also ignore any tables it does not recognise so long as the names of those tables don't match that of a SilverStripe class
-  + This means SilverStripe could be able to happily co-exist in a DB with other tables.
+  + This means SilverStripe can co-exist in a DB with tables created by another framework.
+
+
+### dev/build (caveats)
+* Occasionally during development, the /dev/build task will find "conflicts" in your database tables, similar to merge conflicts in your code.
+* this is often caused by adding, deleting, or modifying an enum column
+* Foreign Key IDs from a has_one or has_many can also cause issues.
+* You will need to manually manage these issues through database administration.
 
 
 ### When to dev/build?
@@ -308,8 +331,8 @@ The task compares the current database to the classes defined in code and will p
   + You have created a new PHP code file, such as a new Pagetype
   + You have made any changes which will affect the database such as adding or removing fields from the $db, $has_one, and some other arrays.
   + You have created (or removed) a template file
-  + Changes to the config.yml file
-  + After installing a new module
+  + Changes to any yml file
+  + After installing a new module or DataExtension
 
 
 ### When to NOT dev/build?
@@ -362,13 +385,13 @@ As an example, let's look at [BaseHomePage.php](https://github.com/silverstripe/
 
 ### Config fields
 * We observe these as `private static $variablename;` at the top of the class.
-* These provide some sensible defaults for values used throughout the page
+* These provide some sensible defaults for configurable values used throughout the pagetype. 
 * Normally, a `private static` variable would mean that PHP can never access its values from outside the class, so what's happening here?
 
 
 ### Config fields
 * These values can be overloaded using a YML file defined on your app/_config folder
-* In SilverStripe, this is known as the "Config API", and it is a common way to overload values defined in a module without making any modifications to the module itself
+* In SilverStripe, this is known as the "Config API", and it is a common way to overload and inject values defined in a module without making any modifications to the module itself
 
 
 ### Config fields
@@ -381,7 +404,12 @@ As an example, let's look at [BaseHomePage.php](https://github.com/silverstripe/
 * You can also use something called the _Injector_ to set default values on classes anytime `DataObject::create()` is called. 
 * Controlled by YML, the Injector can also call methods and pass in parameters when this method is invoked.
 * This is very useful for tests, and required to use some modules.
-* We will not cover use of Injector today, but you can find more information at the end of these slides.
+
+
+### A bit about the Injector
+* The Injector can also read environment variables from your environment and inject them into your code. 
+* This means sensitive information, like passwords and API keys, can be referenced as constants and injected into your codebase
+* The Injector is a very complex topic. We will not cover use of Injector today, but you can find more information at the end of these slides.
 
 
 
@@ -433,14 +461,14 @@ It is also useful for connecting your classes to code generated on an older code
 
 
 ###### $summary_fields
-* These are a list of "display fields" shown to the user when the object is managed in a GridField
-  + If the column represents the result of a "data list" fetched as a result of a database query, it is automatically searchable, filterable, and sortable with no other input from you
+* These are a list of "display fields" shown to the user when the object is managed in a GridField, which we will cover later
+  + If the column represents the result of a "data list" fetched as a result of a database query, it is automatically **searchable**, **filterable**, and **sortable** with no other input from you
   + These do not need to be a database column: they can also call a method to display arbitrary data in the cell, such as displaying a ThumbNail or the calculated sum of two or more other columns
 
 
 ##### $summary fields can be calculated
 * This is known as a "getter" method, which we'll learn more about later
-* When using a getter, you lose the ability to search, sort, or filter on that particular column. 
+* When using a getter, you lose the ability to search, sort, or filter on that particular column. However, you can define the data it represents in the *$searchable_fields* array
 
 
 ##### Database relationships
@@ -457,7 +485,7 @@ In order for the ORM to work its magic, each class that uses it needs to be told
 
 
 ###### $has_one
-* This is very similar to the $db field, but it specifically to a single ID on another table.
+* This is very similar to the $db field, but it specifically maps to a single ID on another table.
 * It always appears in a database column with the suffix ID
 * For example, in the future your Home Page may "has one" HeroImage. This creates a HeroImageID on the HomePage table, and refers to an Image class on the File table. 
 
@@ -497,7 +525,6 @@ private static $has_one = ['Parent' => HomePage::class];
   + many_many
   + belongs_many_many
   + many_many_extraFields
-  + many_many_through
 
 
 ###### $many_many
@@ -515,10 +542,80 @@ This is a reciprocal relation on another table to complete the the many_many rel
 It is possible to inject data into your join table, if the relationship requires some extra information. A common example of this application is a "SortOrder" integer field, which tracks the sorted order of IDs in a relationhip. If, for example, your tags were not sorted alphabetically but managed in the CMS, a many_many_extraField might be used to manage that relationship
 
 
-###### $many_many_through
+###### $many_many_extraFields: caution
+`many_many` relationships consist of three columns: ID, ParentID, and ChildID. Because of this, duplicates are not possible. You would to add an _extraField "MyCount" on the Child class
+
+```
+private static $many_many_extraFields = [
+    'Parent' => [
+        'Count' => 'Int'
+    ]
+]
+```
+This will add a "Count" column to your `Parent_Child` table. The `MyCount` property is accessible on `Parent` and `Child` when referenced in a relationship.
+
+
+
+###### $many_many through
 This is a new feature introduced in SilverStripe 4 which allow the "internal join table" to be associated with a DataObject. 
 
-This is like saying "an Order has many Items, and an Item belongs to many Orders. Go through the LineItem relation for quantity, colour, and t-shirt sizes"
+This is like saying "A Member has Many verified bank accounts, and a verified bank account can belong to many owners. Go through the SharedBankAccount relation for verification information"
+
+
+###### $many_many through example
+<small class="w-100">
+```
+class Member extends DataObject {
+    private static $many_many = [
+        'VerifiedBankAccounts => [
+            'through' => SharedBankAccount::class,
+            'from' => 'Owner',
+            'to' => 'Account
+        ]
+    ];
+}
+class BankAccount extends DataObject {
+    private static $belongs_many_many = [
+        'Owners' => Member::class
+    ];
+}
+class SharedBankAccount extends DataObject
+{
+    private static $table_name = 'SharedBankAccount';
+    private static $db = ['VerifiedDate' => 'Datetime'];
+
+    private static $has_one = [
+        'Owner' => Member::class,
+        'Account' => BankAccount::class
+    ];
+}
+    ```
+</small>
+
+
+###### $many_many through: example
+We can now access the join table directly, when we know the ID for Owner and Account.
+```
+$accountID = (int) $request->postVar('AccountID');
+$ownerID = (int) $request->postVar('OwnerID');
+
+$account = SharedBankAccount::get()
+    ->filter([
+        'AccountID' => $accountID,
+        'OwnerID' => $member->ID
+    ])->first();
+var_dump($account->VerifiedDate);
+```
+
+
+###### $many_many through: templates
+The data on the join table is accessible within a loop:
+```
+<% loop CurrentUser.VerifiedBankAccounts %>
+Verified $Join.VerifiedDate.Ago
+<% end_loop%>
+```
+It is not possible to do this with many_many_extraFields.
 
 
 ## What is a DataObject?

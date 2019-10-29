@@ -74,26 +74,17 @@ src
 It is important to include a composer.json file with your module so that it can be distributed and managed with composer in other projects. Here's an example of one I've written:
 
 
+<small class="w-100">
 ```js
 {
     "name": "elliot-sawyer/totp-authenticator",
     "description": "Enable 2FA authentication with TOTP",
     "type": "silverstripe-vendormodule",
     "license": "BSD-3-Clause",
-    "keywords": [
-...
-    ],
-    "authors": [
-        {
-            "name": "Elliot Sawyer"
-        }
-    ],
-    "require": {
-...
-    },
-    "require-dev": {
-...
-    },
+    "keywords": [...],
+    "authors": [{"name": "Elliot Sawyer"}],
+    "require": {...},
+    "require-dev": {...},
     "autoload": {
         "psr-4": {
             "ElliotSawyer\\TOTPAuthenticator\\": "src/",
@@ -113,6 +104,7 @@ It is important to include a composer.json file with your module so that it can 
     "prefer-stable": true
 }
 ```
+</small>
 
 
 ### composer.json
@@ -306,7 +298,7 @@ Now if the From address is missing, we won't be able to save our DataObject unti
 
 ### The Emails ModelAdmin
 
-At present if you go to the CMS and look for your Managed Email dataobject you won't find a way to create them. This is another big difference between DataObjects and Pages: pages can always be created via the Site Stree, but DataObjects have no singular place for creation by default. 
+At present if you go to the CMS and look for your Managed Email dataobject you won't find a way to create them. This is another big difference between DataObjects and Pages: pages can always be created via the Sitetree, but DataObjects have no singular place for creation by default. 
 
 
 #### The Emails ModelAdmin

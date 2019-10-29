@@ -1,141 +1,158 @@
 # Installing SilverStripe
 
 
-## Installing CWP SilverStripe
+## Installing SilverStripe
+SilverStripe is installed with PHP's composer package manager. At a minimum, all you need is this:
 
-* To install the CWP version of SilverStripe its best to check the CWP page for instructions on how to do this. This page can be found here: <a href="https://www.cwp.govt.nz/developer-docs/en/2/getting_started/" target="\_blank">https://www.cwp.govt.nz/developer-docs/en/2/getting_started/</a>
+<small>`composer require silverstripe/framework ^4`</small>
+
+This creates a "headless" framework for basic model-view-controller applications such as REST APIs.
+
+
+## Installing SilverStripe
+A headless SilverStripe application is not very useful on its own. Most projects will use the CMS recipe:
+<small>`composer require silverstripe/recipe-cms ^4`</small>
+
+This creates a base project with the CMS, framework, and some commonly used addons for basic page creation.
+
+
+## Installing SilverStripe
+A "recipe" is a common paradigm for installing and managing larger SilverStripe projects. Government agencies, e-commerce platforms, and commercial websites will use recipes to manage their work.
+
+
+## Installing SilverStripe (CWP)
+The Common Web Platform is a collection of the CMS, framework, and common modules used to support government agency functions and operations throughout New Zealand. 
+
+
+## Installing SilverStripe (CWP)
+To install the CWP recipe it's best to check the CWP page for instructions on how to do this. This page can be found here: <a href="https://www.cwp.govt.nz/developer-docs/en/2/getting_started/" target="\_blank">https://www.cwp.govt.nz/developer-docs/en/2/getting_started/</a>. We will follow these instructions later.
 
 
 ## Prerequisites
+Installation and configuration are the biggest barriers to starting SilverStripe development, so I will teach these topics today.
 
-* As detailed on the page there are some prerequisites such as having PHP, SQL database (such as mysql), and a web server like Apache2 to run the site. None of these are present on the training room computers so need to be installed.
+There are some prerequisites such as having PHP, a SQL database (such as mysql), and a web server like Apache2 to run the site. None of these are present on the training room computers so we need to install them first.
+
+
+## Prerequisites (continued)
+Many users will find it preferable to use Docker or WAMP/MAMP/LAMP stacks to handle these steps for them. Configuring these environments can be tricky: teaching the basics here is often still required for those too.
 
 
 ### You need to install PHP, Apache, and MySQL
 
-* [This is an excellent guide](https://www.digitalocean.com/community/tutorials/how-to-install-linux-apache-mysql-php-lamp-stack-on-ubuntu-16-04). Note that this is not the exact same environment as CWP, but it works very well for development.
+This is an excellent guide: 
+<small>https://www.digitalocean.com/community/tutorials/how-to-install-linux-apache-mysql-php-lamp-stack-ubuntu-18-04</small>
+
+Production environments will often differ, but this approach is suitable for development on most environments.
 
 
-#### Apache
-
-* On CWP, Nginx is used as a proxy for requests to Apache. This is not applicable in a dev environment but something to be aware of. We will not install nginx here.
+#### Install Apache
 
 ```
     sudo apt-get update
     sudo apt-get install apache2
 ```
-<!-- .element: class="fragment" data-fragment-index="0" -->
 
 
-#### mod_rewrite
+#### Apache:: mod_rewrite
 
-* SilverStripe requires mod_rewrite.  Activate it with Apache:
+SilverStripe requires mod_rewrite.  Activate it within Apache:
 
 ```
 sudo a2enmod rewrite
 sudo service apache2 restart
 ```
-<!-- .element: class="fragment" data-fragment-index="0" -->
+
 
 
 #### PHP
 
-* Our training environment will PHP 7.0. Ideally you should install PHP 7.1 for CWP. Alternatively, you can develop on a Vagrant or docker instance.
+Our training environment will use PHP 7.2. Alternatively, you can develop on a Vagrant or docker instance.
 
-* Install PHP and its dependencies
+Install PHP and SilverStripe's dependencies
 
+<small class="w-100">
 ```
-#core dependencies
-sudo apt-get install php php-curl php-gd php-mbstring php-mcrypt php-tidy php-intl php-mysql php-xml php-dom php-zip unzip libapache2-mod-php
-#developer tools
-sudo apt-get install php-xdebug php-cli
+sudo apt install php php-curl php-gd php-mbstring
+sudo apt install php-tidy php-intl
+sudo apt install php-mysql php-xml
+sudo apt install php-dom php-zip unzip libapache2-mod-php
+sudo apt install php-xdebug php-cli
 ```
-<!-- .element: class="fragment" data-fragment-index="0" -->
+</small>
+
 
 
 #### Composer
 
-* Installing the CWP codebase is almost always done with composer. It is the easiest way to install the project from scratch and start developing. This is also how the CWP Dashboard deploys new versions of your website. 
-
-* Other tools, such as FabricDeploy or PHP Deployer, make use of composer to build the project first then upload the result to a server. 
-<!-- .element: class="fragment" data-fragment-index="0" -->
+Installing a recipe is almost always done with composer. It is the easiest way to install the project from scratch and start developing. Many deployment tools will deploy in this way.
 
 
-* [Download instructions here](https://getcomposer.org/download/) or run this script:
+#### Composer (continued)
+Tools such as FabricDeploy or PHP Deployer make use of composer to build the project first then upload the result to a server. Some will checkout the code from git _on the server_ and run `composer install`.
 
-```
-EXPECTED_SIGNATURE="$(wget -q -O - https://composer.github.io/installer.sig)"
-php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"
-ACTUAL_SIGNATURE="$(php -r "echo hash_file('sha384', 'composer-setup.php');")"
 
-if [ "$EXPECTED_SIGNATURE" != "$ACTUAL_SIGNATURE" ]
-then
-    >&2 echo 'ERROR: Invalid installer signature'
-    rm composer-setup.php
-    exit 1
-fi
+#### Let's install Composer
 
-php composer-setup.php --quiet
-RESULT=$?
-rm composer-setup.php
-sudo mv composer.phar /usr/local/bin/composer
-```
-<!-- .element: class="fragment" data-fragment-index="0" -->
+Download instructions are here: https://getcomposer.org/download/
 
-* To check if the installation was successful, type "composer" in your terminal and press enter. Composer should output a list of options.
-<!-- .element: class="fragment" data-fragment-index="1" -->
+Run this script: 
+
+<small>`curl https://getcomposer.org/installer | php`</small>
+
+Then install it locally:
+<small>`sudo mv composer.phar /usr/local/bin/composer`</small>
+
+And test it:
+
+<small>`composer about`</small>
 
 
 #### Git
 
-* Composer and the CWP service both depend on `git clone` to work. It should be installed on Ubuntu already, but if it is not then run this command:
+Composer and the CWP service both depend on `git clone` to work. It should be installed on Ubuntu already, but if it is not then run this command:
 
-```
-sudo apt-get install git
-```
-<!-- .element: class="fragment" data-fragment-index="0" -->
+<small>`sudo apt-get install git`</small>
+
 
 
 #### MySQL
 
 * MySQL can (and should) be installed on a different instance for performance reasons. There's no harm in running the webserver and the DB on the same machine.
 
-* The CWP service uses MariaDB, which is a more open version of MySQL. There are very few observable differences, and MySQL is fine for development.
+* Many services use MariaDB instead, which is a more freely licensed version of MySQL. There are very few observable differences, and MySQL is fine for development.
 
 
 #### MySQL 
 
-* Install with this command: 
+Install with this command: 
 
-```
-sudo apt-get install mysql-server
-mysql_secure_installation
-```
-<!-- .element: class="fragment" data-fragment-index="0" -->
+<small>`sudo apt-get install mysql-server`</small>
+
+<small>`mysql_secure_installation`</small>
 
 
-#### Set a root password.
-* [?] Optionally use VALIDATE PASSWORD PLUGIN if you intend to set up other users.
-<!-- .element: class="fragment" data-fragment-index="0" -->
+#### MySQL :: Set a root password
+Don't forget your root password!  Write it down, you will need it later.
+
+
+#### MySQL :: Set a root password
+* [ ] Optionally use VALIDATE PASSWORD PLUGIN if you intend to set up other users.
 * [N] Don't change root password, because we just set it.
-<!-- .element: class="fragment" data-fragment-index="1" -->
 * [Y] Remove anonymous users
-<!-- .element: class="fragment" data-fragment-index="2" -->
 * [Y] Disallow root remotely, this is a development machine.
-<!-- .element: class="fragment" data-fragment-index="3" -->
 * [Y] Remove test database and access.
-<!-- .element: class="fragment" data-fragment-index="4" -->
 * [Y] Reload privilege tables
-<!-- .element: class="fragment" data-fragment-index="5" -->
 
 
 ### Configuring your virtualhost
 
-* On Ubuntu, we will add a new virtualhost to /etc/apache2/sites-available/mysite.localhost.conf
+On Ubuntu, we will add a new virtualhost to /etc/apache2/sites-available/mysite.localhost.conf
 
 
 ### Configuring your virtualhost
 
+<small class="w-100">
 ```
 <VirtualHost *:80>
 	ServerName mysite.localhost
@@ -151,7 +168,7 @@ mysql_secure_installation
 	DocumentRoot /home/ubuntu/mysite/public
 
 	<Directory /home/ubuntu/mysite/public>
-		Options Indexes FollowSymLinks MultiViews
+		Options -Indexes +FollowSymLinks +MultiViews
 		AllowOverride All
 		Require all granted
 	</Directory>
@@ -161,18 +178,19 @@ mysql_secure_installation
 	CustomLog ${APACHE_LOG_DIR}/access.log combined
 </VirtualHost>
 ```
+</small>
 
 
 ### Configuring your virtualhost
 
-* Enable your site. Ignore any warnings about the docroot:
+Enable your site. Ignore any warnings about the docroot:
 
+<small class="w-100">
 ```
 sudo a2ensite mysite.localhost
 sudo service apache2 restart
 ```
-<!-- .element: class="fragment" data-fragment-index="0" -->
-
+</small>
 
 ### /etc/hosts
 
@@ -202,38 +220,47 @@ sudo service apache2 restart
 
 #### Other tips:
 
-* Change your Apache User and Group to run as your local user (i.e. ubuntu)
-    * Update /etc/apache2/apache.conf
-    * Replace `User ${APACHE_RUN_USER}` with **User ubuntu**
-    * Replace `Group ${APACHE_RUN_GROUP}` with **Group ubuntu**
-    * Restart apache
+Change your Apache User and Group to run as your local user (i.e. ubuntu). 
+<small class="w-100">
+```
+sudo nano /etc/apache2/envvars
 
-* Don't do this in a production environment! The webserver user should have minimal privileges
-<!-- .element: class="fragment" data-fragment-index="1" -->
+#Replace `export APACHE_RUN_USER=www-data` with `export APACHE_RUN_USER=ubuntu`
+#Replace `export APACHE_RUN_GROUP=www-data` with `export APACHE_RUN_GROUP=ubuntu`
+
+`sudo service apache2 restart`
+```
+</small>
+Don't do this in a production environment! The webserver user should have minimal privileges
 
 
 ### Test your setup
 
+Visit http://mysite.localhost/x.php after running this command: 
+<small class="w-100">
 ```
 mkdir -p ~/mysite/public
-echo "<?=phpinfo()?>" >> ~/mysite/public/x.php
+echo "<?=phpinfo()?>" >> ~/mysite/public/x.php. You should see some details about your PHP installation
 ```
+</small>
 
-* Delete this before proceding with your CWP setup
+Delete this directory before proceding with your SilverStripe installation
+<small class="w-100">
 ```
 rm -rf mysite
 ```
+</small>
 
 
-## Create your CWP project
+## Create your SilverStripe project
 
-* Assuming all your installation requirements are met, installing the CWP project can be done with a single command:
+We will now install CWP. Installing the CWP project can be done with the following command:
 ```
 cd ~
 composer create-project cwp/cwp-installer mysite ^2
 ```
 
-* This will take a while to run (~10 minutes)
+This will take a while to run (~10 minutes).
 
 
 ### What's happening here?
@@ -275,14 +302,14 @@ mysite
 #### public
 * The "public" folder contains all publicly visible assets. 
 * This includes documents and images uploaded into the CMS, as well as symlinks to the JS, CSS, imagery, and other assets that are whitelisted by your theme. 
-* You will never need to edit anything yourself in this folder. 
+* You will rarely need to edit anything in this folder. Most public changes can be made in your themes instead
 
 
 #### more about public
 * SilverStripe serves all requests to the web from the /public folder. 
-* All other parts of your codebase are protected from the webserver, which does not require direct publicly-accessible access to them. 
+* All other parts of your codebase are protected from the webserver, which does not require direct public access to them. 
 * This is also where the CMS `assets` folder places files uploaded from the CMS.
-* This entire folder should be readable by the webserver user.
+* This entire folder and its subdirectories should be readable by the webserver user. `assets` is writeable.
 
 
 #### themes
@@ -366,21 +393,24 @@ vendor/bin/sake dev/build flush=
 
 ## Saving your work
 
-* The CWP project includes a .gitignore file for files that don't need to be tracked, as well as some sensible defaults for .editorconfig and test suites. 
+The CWP project includes a .gitignore file for files that don't need to be tracked, as well as some sensible defaults for .editorconfig and test suites. 
 
-* Now would be a prudent time to create an "initial commit" to your git repository and push it to the remote repository for safekeeping. Make a note of the clone URL for your git repository, it might look like this: 
+Now would be a prudent time to create an "initial commit" to your git repository and push it to the remote repository for safekeeping. Make a note of the clone URL for your git repository, it might look like this: 
 
-    + git@github.com:you/installing-silverstripe.git
-    + https://github.com/you/installing-silverstripe.git
+    git@github.com:you/installing-silverstripe.git
+    https://github.com/you/installing-silverstripe.git
+
 
 ## Saving your work
 
+<small class="w-100">
 ```
 git remote origin add https://github.com/you/installing-silverstripe.git
 git add .
-git commit -nM 'Intial commit'
+git commit -nM 'Initial commit'
 git push -u origin master
 ```
+</small>
 
 
 ## Notes and Tips
@@ -393,7 +423,7 @@ git push -u origin master
 
 
 ## Notes and Tips
-* .env should only be used when the site is in `dev` mode. In a production environment, these should be set as system environment variables instead. You can do this with SetEnv in your apache virtualhost.
+* .env should only be used when the site is in `dev` mode. In a production environment, these should be set as system environment variables instead. You can do this with SetEnv in your apache virtualhost. You could also add them to `/etc/apache2/envvars`
 
 
 ## Further reading

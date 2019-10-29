@@ -3,7 +3,7 @@
 
 ## Creating a New Landing Page Template
 
-In the last lesson, we did basically the minimum to create a new page type in the CMS; we created the Model and the Controller classes part of the MVC design pattern. In this lesson we will discuss how the page templates the V part work in SilverStripe.
+In the last lesson, we did basically the minimum to create a new page type in the CMS; we created the Model and the Controller classes part of the MVC design pattern. In this lesson we will discuss how the page templates (the V part work) in SilverStripe.
 
 
 ### Creating a New Landing Page Template
@@ -52,14 +52,14 @@ For example on the landing page, as well as the Content entered in the TinyMCE e
 ### Layout/LandingPage.ss
 
 * Let's create the template file. This is where the themes directory and the copy of the standard theme you created earlier comes in to play.
-    + Go in to the themes/museum/templates/Layout directory
+    + Go in to the themes/watea/templates/Layout directory
     + Create a new file (in Atom right-click on the Layout folder and choose 'New file')
     + Call it LandingPage.ss
 
 
 ### Layout/LandingPage.ss
-* It's very important the filename matches the name of the PHP class you want the template to be for. If the names do not match then the template will not be detected or used for the page. 
-* If the class exists inside of a namespace, you will need ot use folders to mimic that space: (i.e. templates/YourNamespace/YourProject/PageType/Layout/SomePage.ss)
+* It's very important the filename matches the name of the PHP class you want the template to be for. They are case-sensitive. If the names do not match then the template will not be detected or used for the page. 
+* If the class exists inside of a namespace, you will need ot use folders to mimic that space: <small>(i.e. `templates/YourNamespace/YourProject/PageType/Layout/SomePage.ss`)</small>
 
 * Now we can add the HTML to the template, but first...  
 
@@ -67,7 +67,7 @@ For example on the landing page, as well as the Content entered in the TinyMCE e
 ## Page.ss vs Layout/Page.ss
 
 * There are 2 files called Page.ss in play in a SilverStripe site. 
-    + The first, located in templates/Page.ss, defines the structure for all pages in the site. It contains the opening HTML tag, the head section, includes the Header and Navigation. The footer, Google Analytics code, and closing HTML tags are output.
+    + The first, located in templates/Page.ss, defines the structure for all pages in the site. It contains the opening HTML tag, the head section, includes the Header and Navigation. The footer and closing HTML tags are output.
     + It _then_ includes the $Layout
 
 
@@ -75,7 +75,7 @@ For example on the landing page, as well as the Content entered in the TinyMCE e
 * The other Page.ss file is in templates/Layout/Page.ss.
     + It is layout for the generic Page type.
     + The HTML defined in this file is included in the first Page.ss where the $Layout variable is located when the site is rendered
-    + If you think of it as a sandwitch, the top-level Page.ss is the bread and the Layout/Page.ss is the filling
+    + If you think of it as a sandwich: the top-level Page.ss is the bread and the Layout/Page.ss is the filling
     + Layout represents the content of our Page or one of the Page subclasses.
 
 
@@ -94,7 +94,7 @@ Similarly for the Landing Page the LandingPage.ss template will be rendered wher
 <div class="row">
     <section class="col-md-7 col-md-offset-1">
 
-        <p><strong>This is the landing page template</strong</p>
+        <p><strong>This is the landing page template</strong></p>
 
         <% if $Content.RichLinks %>
             $Content.RichLinks
@@ -134,7 +134,7 @@ Now its time to loop through and output the child pages of this landing page by 
 <% end_loop %>
 ```
 
-Save the change to the template file, dev/build, and then look at the Attractions landing page in the front-end of the site. 
+Save the change to the template file, and then look at the Attractions landing page in the front-end of the site. 
 
 You should see the 3 child pages listed with their title, the first 50 characters of the content, and a 'Read more...' link. 
 
@@ -216,7 +216,7 @@ For example
 // Not equals
 <% if not $TimePeriod %>
    <p>Unknown time period specified</p>
-<% end_id %>
+<% end_if %>
 
 // Greater than
 <% if $Results > 20 %>
@@ -234,6 +234,7 @@ The double ampersand && means "and", the double pipe / vertical bar || means "or
 
 ### Boolean logic
 For example
+<small class="w-100">
 ```html
 // And
 <% if $TimePeriod == '7Days' && $Format == 'List %>
@@ -245,13 +246,14 @@ For example
    <p>Some content here</p>
 <% end_if %>
 ```
+</small>
 
 
 ### Many more...
 
 * There is also a lot more you can do in the templates which won't be covered today. 
-    + `with / end_with` and `control / end_control` (these are synonyms)
-    + `<% include SomeTemplate SomeValue=XXXXX,SomeOtherValue=YYYY %>`
+    + Scoping: `with / end_with` and `control / end_control` (these are synonyms)
+    + Includes: `<% include SomeTemplate SomeValue=XXXXX,SomeOtherValue=YYYY %>`
 
 
 ## Further reading
@@ -264,6 +266,6 @@ For example
 
 ### Next
 
-In the next lesson we will show how to employer getter methods in your template code. We will learn how to add some database fields to our Landing Page, including those inherited from a parent Page class. We will update these database fields using the CMS. We will also learn what a "Getter" method is and how they work.
+In the next lesson we will show how to employ getter methods in your template code. We will learn how to add some database fields to our Landing Page, including those inherited from a parent Page class. We will update these database fields using the CMS. We will also learn what a "Getter" method is and how they work.
 
 [Lesson 06 - Introduction to CMS fields](06_IntroToCMSFields.md)

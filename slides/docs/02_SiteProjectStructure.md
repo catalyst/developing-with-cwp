@@ -21,11 +21,11 @@ vendor
 ### Folder structure: cms and framework
 * The CMS and framework directories live in vendor/silverstripe/framework and vendor/silverstripe/cms
 * These contain the core SilverStripe framework and the CMS
-* All the CWP directories (found in vendor/cwp) contain functionality built on top of the core SilverStripe to give us the CWP version of SilverStripe
+* All the CWP directories (found in vendor/cwp) contain functionality built on top of the core SilverStripe to give us the CWP recipe of SilverStripe
 
 
 ### Folder structure: cms and framework
-* If you were to download and install the standard version of SilverStripe then you won't get the CWP directories as well as a number of other modules.
+* If you were to download and install the standard SilverStripe recipe with composer then you won't get the CWP directories, as well as a number of other modules.
 
 
 ### Folder structure: apps and themes
@@ -39,11 +39,15 @@ vendor
 
 ### Folder structure: vendor and composer.lock
 * When you clone down your project to another computer, typing "composer install" will install all the other modules for your site to that machine
-* Composer knows what to do from the composer.lock (and associated composer.json) file in the root directory of your site, it tells composer which modules and also which version to use
+* Composer knows what to do from the composer.lock (and associated composer.json) file in the root directory of your site. It tells composer which modules and also which version to use
 
 
 ### Folder structure: vendor and composer.lock
-* This ensures that when composer install is run on another computer that machine will git the same version of the modules you used for development on your machine, so there should be no issues because of any changes to those modules - because they have not changed.
+* This ensures that when composer install is run on another computer, that machine will get the same version of the modules you used for development on your machine. There should be no issues because of any changes to those modules - because they have not changed.
+
+
+### Folder structure: vendor and composer.lock
+* One exception to this is when your development machine is running a different PHP version from your production server. The same modules will be checked out, but may behave differently with different PHP versions. This means a composer.lock file built on one machine will only work on a machine with the same versioning.
 
 
 ### Folder structure: vendor
@@ -56,8 +60,8 @@ vendor
 
 
 ### Folder structure: app
-* We will be spending a lot of time in this directory in this course, this is where you create new page types, can create dataobjects (which we will cover later) and other things
-* The templates for these pages which control how they look and what is displayed to the user are created under the themes folder which we will take more of a look at in the next lesson
+* We will be spending a lot of time in this directory in this course. This is where you create new page types, DataObjects (which we will cover later), and other things
+* The templates for these pages, which control how they look and what is displayed to the user, are created under the themes folder which we will take more of a look at in the next lesson
 
 
 ### Folder structure: app
@@ -80,6 +84,19 @@ _config.php
 * The other directories and files in the app folder can be ignored as we will not need to alter them in this course.
 
 
+### Protip:
+* This is also all you need to create a new SilverStripe module:
+```
+_config
+    config.yml
+src
+    ...
+    ...
+    ...
+_config.php
+```
+
+
 ## Preparing the app/src directory
 
 * Lets prepare the app/src directory for the upcoming lessons in this course, please create these folders inside the app/src folder.
@@ -95,7 +112,7 @@ src
 
 
 ### Preparing the app/src directory
-* Then on the command line, from the root directory of the museum site, issue these commands to move the HomePage.php and Page.php files in to the PageType directory in a way that Git knows about..
+* Then on the command line, from the root directory of mysite, issue these commands to move the HomePage.php and Page.php files in to the PageType directory in a way that Git knows about..
 
 
 ### Preparing the app/src directory
@@ -103,11 +120,11 @@ src
 git mv app/src/HomePage.php app/src/PageTypes/HomePage.php
 git mv app/src/Page.php app/src/PageTypes/Page.php
 
-git commit
+git commit -m 'move pages'
 git push
 ```
 
-* If not using Git then you can just click, drag and drop, the 2 files in to the pagetypes folder in your IDE to move them.
+* You can also just drag and drop the 2 files in to the pagetypes folder in your IDE to move them.
 
 
 ### Preparing the app/src directory
@@ -121,8 +138,7 @@ http://mysite.localhost/dev/build
 ## _config/config.yml
 
 * For now, just note where this is.
-* Some modules have configuration options which are set by a developer, if so you enter this here.
-* This file will also be used in the advanced developer course when we come to do extensions.
+* Some modules have configuration options which are set by a developer. You'll add these in a YML file, such as this one.
 
 
 ## _config.php

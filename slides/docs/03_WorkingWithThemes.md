@@ -19,10 +19,12 @@
 ### Wātea
 * Wātea is a "subtheme" for CWP built on top of the starter theme. To install it, you need to add two more modules to your CWP project:
 
+<small class="w-100">
 ```
-    composer require cwp/watea-theme 2.1
-    composer require cwp/agency-extensions ^2.1
+    composer require cwp/watea-theme ^2
+    composer require cwp/agency-extensions ^2
 ```
+</small>
 
 
 ### Wātea
@@ -55,7 +57,7 @@ SilverStripe\View\SSViewer:
 
 ### What's happening here
 * "starter" is where most of your base layer templates will exist
-* SilverStripe should never be missing a template for a frontend user request at this point, with one notable exception:
+* SilverStripe should never be missing a template for a frontend user request at this point, with one notable exception...
 
 
 ### $default
@@ -67,7 +69,7 @@ SilverStripe\View\SSViewer:
 ### More about Wātea
 * Run `/dev/build?flush=1` again, and note the visual changes to your website.
 
-* Agency Extensions adds a few new features to the CMS that Wātea will automatically use, if if it installed. These include:
+* Agency Extensions adds a few new features to the CMS that Wātea will automatically use, if it is installed. These include:
     + A Carousel with Hero Image capability added to some pages, or all of them
     + A theme/colour picker
     + custom logos and icon imagery in the header and footer
@@ -89,38 +91,36 @@ SilverStripe\SiteConfig\SiteConfig:
 
 ### Advantages of Wātea
 * You end up with a highly customiseable theme, aesthetically pleasing, and fully accessible theme built on top of CWP components.
-* Very few websites ever require no customisation at all, but with Wātea's diverse set of features, you may be happy with the out of the box experience with little to no development experience.
+* Very few websites ever require no customisation at all. Wātea offers a diverse set of features; you may be happy with the out of the box experience with little to no development experience required.
 
 
 ### Disadvantages of  Wātea
-* Wātea is based on Bootstrap 3. If this is a problem for you, you'll need to create your own theme.
+* Older versions of Wātea are based on Bootstrap 3, but this has changed recently. 
 * Ongoing support is difficult, because you can no longer automatically manage the project with composer once you have made changes to it.
-
 * As I said, it is very rare for an agency to *never* make a single change to their theme.
-* If you want to build off of Watea, consider the following options:
+* If you want to build off of Watea, consider the following options...
 
 
-### Workarounds to work with Wātea
+### Workarounds to work with Wātea :: Option 1
 * Create a third theme, which cascades down to Wātea and then Starter.
-* Your theme replaces any component found in Wātea
-    + You are now responsible for building your own Javascript and CSS.
+* Your theme replaces any component found in Wātea, and you become responsible for building your own Javascript and CSS.
 
-* The best way to handle this is to copy the watea folder, paste it into the same directory, then rename the theme to something you own.
+* The best way to handle this is to clone the watea folder in the themes directory, then rename the theme to something else...
 
 
-### Workarounds to work with Wātea (cont.)
+### Workarounds to work with Wātea :: Option 1 (continued)
 
-* Delete the `.git` folder in your new copy, re-initialise with `git init`, and manage the new theme yourself with composer.json in the parent project.
+* Delete the `.git` folder in your new copy. Re-initialise with `git init`. Add the new theme to `composer.json` in the parent project. Run `composer update` from the base directory
 * This creates a version of Wātea that you manage yourself, but you need to take care that nothing in this folder conflicts with behaviour in the previous two modules. 
 
 
-### Workarounds to work with Wātea (cont.)
+### Workarounds to work with Wātea :: Option 2
 * Delete the `.git` folder from starter and watea
 * Add the entire contents of these folders to the version control in the parent project
 * You can now make your own changes to your website themes without concern for what the upstream branch is doing
 
 
-### Workarounds to work with Wātea (cont.)
+### Workarounds to work with Wātea :: Option 2 (continued)
 * This may not be desireable for the same reason - you can no longer depend on updates from the upstream branch. Theme and feature updates are now your responsibility
 
 * You can always choose a different theme, or create your own.
@@ -128,10 +128,11 @@ SilverStripe\SiteConfig\SiteConfig:
 
 ## Creating our own theme
 
-If Watea is a bit much, or doesn't satisfy your requirements, you can create your own theme without too much hassle. The simplest themes have a folder structure that looks something like this:
+If Watea is a bit much, or doesn't satisfy your requirements, you can create your own theme without too much hassle. The simplest themes have a folder structure that looks something like this...
 
 
 ### Creating our own theme
+<small class="w-100">
 ```
 themes
     yourtheme
@@ -153,7 +154,8 @@ themes
             ...
             Page.ss
       
-```
+    ```
+</small>
 
 
 ### Creating our own theme
@@ -195,6 +197,7 @@ Let's create an example from the Bootstrap 4 starter template:
 
 
 ### Starter template in Page.ss
+<small class="w-100">
 ```html
 <!doctype html>
 <html lang="en">
@@ -226,6 +229,7 @@ Let's create an example from the Bootstrap 4 starter template:
   </body>
 </html>
 ```
+</small>
 
 
 ### Navigation and Footer
@@ -233,6 +237,7 @@ I have also included two templates for Navigation and Footer, which separates th
 
 
 ### Navigation
+<small class="w-100">
 ```html
 #Navigation.ss
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
@@ -257,9 +262,11 @@ I have also included two templates for Navigation and Footer, which separates th
   </ul>
 </nav>
 ```
+</small>
 
 
 ### Footer
+<small class="w-100">
 ```html
 #Footer.ss
 
@@ -276,14 +283,17 @@ I have also included two templates for Navigation and Footer, which separates th
     <% end_loop %>
 </ul>
 ```
+</small>
 
 
 ### Layout/Page.ss
+<small class="w-100">
 ```html
 #Layout/Page.ss
 $Content
 $Form
 ```
+</small>
 
 
 ### Your own theme
@@ -333,7 +343,7 @@ themes
 * Any changes you make to your themed version of the template will take precedence over templates defined on the module
 * However, you must ensure that the folder structure matches that of the module exactly
 * This can be confusing to new developers, but once this convention is learned it can be a powerful tool
-* One common use-case for this is redefining the EdiableFormField templates for the userforms module to include Bootstrap styling.
+* One common use-case for this is redefining the EditableFormField templates for the userforms module to include Bootstrap styling.
 
 
 ### Namespaces and templates
@@ -351,7 +361,7 @@ themes
             Security_changepassword.ss
             Security_resetpassword.ss
 ```
-* This one exception may be fixed in the near future
+* Consider using `silverstripe/login-forms` instead. Future SilverStripe versions will include this by default
 
 
 ## Further reading
