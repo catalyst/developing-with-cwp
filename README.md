@@ -1,6 +1,6 @@
 # Introduction
 
-This repository is for the SilverStripe CWP developer course run at Catalyst. It contains the lessons students work though on the course.
+This repository is for the SilverStripe developer course run at Catalyst, which has been updated to reflect changes for SilverStripe 4 and CWP 2. It contains the lessons students work though on the course.
 
 Currently this is a 1-day intro course, but a second day covering more advanced topics is planned if there is sufficient interest.
 
@@ -10,37 +10,33 @@ The training is scheduled at various times throughout the year. If you are inter
 * https://www.catalyst.net.nz/training/upcoming-training
 
 ## About the course
-This course is for developers who would like to know how to use CWP SilverStripe to build websites for both government and private sector organisations.
+This course is for developers who would like to know how to use SilverStripe to build websites for both government and private sector organisations.
 
-Students will leave the course with an understanding of what the Common Web Platform (CWP) version of SilverStripe is, what its out of the box features are, and practical, hands-on knowledge of how to use it to build websites.
+Students will leave the course with an understanding of what SilverStripe is, what its out of the box features are, and practical, hands-on knowledge of how to use the CWP recipe to build websites.
+
+While this course does use CWP as a basis for training, its focus is to give users a general knowledge of how to build a website using open-source SilverStripe modules. You will learn how to create your own modules, write your own extensions, and develop a theme on top of a recipe.
 
 After an introduction, students will be hands-on gaining practical knowledge and experience in many aspects of SilverStripe development by creating a small website they can take away at the end of the day.
-
-### Note
-
-Currently CWP SilverStripe version 3.x is taught on this course, but this will upgrade to SilverStripe 4.x once the CWP version of SilverStripe 4 is ready.
 
 ## Course outline
 
 We will cover the following topics...
-* What is SilverStripe and the New Zealand Government’s Common Web Platform.
-* What features come out of the box in the CWP version of SilverStripe.
-* An overview of the CMS interface and how content authors upload images, create pages, and alter site settings.
-* How to download and install the CWP version of SilverStripe.
-* Normal set up, site configuration, project structure.
-* Page creation and adding fields to the CMS interface.
-* The ORM, Dataobject creation and object relationships.
-* Themes and template syntax (loops, conditionals, outputting data).
-* How to create a new module, with a dataobject and a modeladmin
-* Creating and processing forms.
+* How to install SilverStripe
+* An explanation of site structure and how things work
+* Theme layout, development, and configuration
+* Creating new page types
+* The ORM, and how to abstract your database queries
+* adding new fields to page types in the CMS
+* how to develop a module
+* ModelAdmins and GridFields
+* how to write a DataExtension
+* How to write a form from scratch
 
-### Note 1
+### Notes
 
-These are the topics normally covered but might alter slightly depending on the needs of the trainees.
+These are the topics normally covered but might alter slightly depending on time, and the needs of the trainees.
 
-### Note 2
-
-Almost all that is taught about CWP SilverStripe development on this course can apply to the standard (non-CWP) version of SilverStripe as well.
+Almost everything that is taught about SilverStripe development on this course can be used on every installation of SilverStripe: it is not specifically a CWP development course. The CWP project is installed to demonstrate an example of common modules encounted on SilverStripe websites throughout New Zealand.
 
 
 ## Target Audience

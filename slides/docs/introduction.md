@@ -13,3 +13,24 @@ I'm Elliot Sawyer. I've been developing SilverStripe websites since Common Web P
 * I am **@null** on the SilverStripe Users Slack channel (silverstripe-users.slack.com)
 * I can be reached at elliotsawyer@catalyst.net.nz
 
+
+### What is SilverStripe?
+SilverStripe is a free and open source content management system and framework for creating and maintaining websites and web applications. It provides an out of the box web-based administration panel that enables users to make modifications to parts of the website, which includes a WYSIWYG website editor.
+
+The framework is modular, flexible, and extensible. It provides a seamless method of working with database records without needing to write complicated database queries.
+
+
+### What is SilverStripe?
+The word SilverStripe means a lot of things:
+* an open-source framework
+* an open-source CMS
+* a company located on Courtenay Place in Wellington
+* a particular species of bamboo
+
+Today, we're referring to the framework and CMS.
+
+
+## Let's get started
+* In our first topic, we will show you how to install SilverStripe on your development environment.
+
+* [Lesson 01 - Installing SilverStripe](01_InstallingCWPSilverStripe.md)
