@@ -3,6 +3,13 @@
 Presented by <!-- .element: class="small-text" --> [Elliot Sawyer](mailto:elliotsawyer@catalyst.net.nz) <!-- .element: class="small-text" -->
 
 
+## Slides URL:
+
+<img src='https://chart.googleapis.com/chart?cht=qr&chl=https%3A%2F%2Fgithub.com%2Fcatalyst%2Fdeveloping-with-cwp%2Ftree%2F2019-october-31&chs=360x360&choe=UTF-8&chld=L|2' rel='nofollow' alt='qr code'>
+<hr/>
+https://github.com/catalyst/developing-with-cwp/tree/2019-october-31
+
+
 ### About the trainer
 <img src="img/elliot-sawyer.jpg" title="Elliot Sawyer" class="w-25 rounded"> <hr/>
 I'm Elliot Sawyer. I've been developing SilverStripe websites since Common Web Platform was released in 2011. I have worked for Careers New Zealand, SilverStripe, and now Catalyst to deliver SilverStripe websites for CWP and commercially.
