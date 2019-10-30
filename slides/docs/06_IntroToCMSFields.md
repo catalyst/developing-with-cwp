@@ -24,9 +24,9 @@ The steps to adding the field are 2 fold, the first is to add a property on the 
 * In the page class add the intro field to the $db array like this...
 
 ```php
-private static $db = array(
+private static $db = [
     'Intro' => 'Varchar(255)',
-);
+];
 ```
 
 
@@ -138,7 +138,7 @@ This is an excellent example of inheritance in action: LandingPage::getCMSFields
 Do a `dev/build?flush=` and open your LandingPage in the CMS.  You will now see three new fields:
 * Intro, which was inherited from Page.php
 * A new tab called "Special Content"
-* In "Special Content", a single ToggleCompositeField, which reveals two new fields once clicked:
+* In "Special Content", two new fields are available:
     * A TextField called "Special Content Headline"
     * A WYSIWYG editor called "Special Content"
 
@@ -150,7 +150,7 @@ Do a `dev/build?flush=` and open your LandingPage in the CMS.  You will now see 
 
 
 ### Make a getter method
-Example
+Example: add this method to the Page.php class
 ```php
 public function getCurrentDateTime()
 {

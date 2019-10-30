@@ -21,7 +21,7 @@
 
 <small class="w-100">
 ```
-    composer require cwp/watea-theme ^2
+    composer require cwp/watea-theme ^3
     composer require cwp/agency-extensions ^2
 ```
 </small>
@@ -136,14 +136,15 @@ If Watea is a bit much, or doesn't satisfy your requirements, you can create you
 ```
 themes
     yourtheme
+        dist
+            css
+                app.css
+            js
+                app.js
+            img
+                mylogo.png
+
         templates
-            dist
-                css
-                    app.css
-                js
-                    app.js
-                img
-                    mylogo.png
             Includes
                 ...
                 Navigation.ss
@@ -161,7 +162,7 @@ themes
 ### Creating our own theme
 * The top-level Page contains the "global" layout of any request made to the site
 * When a user visits a Page, or anything that descends from a Page, they'll see this global layout
-* Usually this page contains site-wide variables like $SiteConfig or $CurrentUser
+* Usually this page contains site-wide variables like $SiteConfig and $CurrentUser
 
 
 ### Creating our own theme
@@ -186,7 +187,7 @@ themes
 
 
 ### Installing your theme
-1. Replace "starter" and "watea" with "mytheme" (or whatever you've named your folder) in `app/_config/theme.yml`
+1. Replace "starter" and "watea" with "yourtheme" (or whatever you've named your folder) in `app/_config/theme.yml`
 2. Run a dev/build?flush=1 to view your changes
 
 
@@ -239,7 +240,6 @@ I have also included two templates for Navigation and Footer, which separates th
 ### Navigation
 <small class="w-100">
 ```html
-#Navigation.ss
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
   <a class="navbar-brand" href="$BaseHref">$SiteConfig.Title</a>
   <ul class="navbar-nav ml-auto">
@@ -268,12 +268,10 @@ I have also included two templates for Navigation and Footer, which separates th
 ### Footer
 <small class="w-100">
 ```html
-#Footer.ss
-
 <ul class="nav justify-content-end">
     <li class="mr-auto">
         <a href="$BaseHref">
-            <img src='$ThemeDir("themes/mytheme")/dist/img/power.png' alt="Logo" style="width:32px;height:32px" class="mt-3"/>
+            <img src='$ThemeDir("themes/yourtheme")/dist/img/logo.png' alt="Logo" style="width:32px;height:32px" class="mt-3"/>
         </a>
     </li>
     <% loop Menu(1) %>
@@ -300,6 +298,20 @@ $Form
 * As you can see, the special `$Layout` variable is populated with $Content from the Layout/Page.ss
 * $Form is used to inject the Login form, which is a special type of Page
 * You can also see the template includes Navigation and Footer being automatically filled in
+
+
+### Your own theme: something's broken
+We still need to expose our new assets in the public directory. Add this to your composer.json's `extra` key in the parent project
+<small class="w-100">
+```
+    "extra": {
+        "expose": [
+            "themes/yourtheme/dist"
+        ],
+        ...
+```
+</small>
+In the base directory, run `composer vendor-expose`
 
 
 ### Your own theme

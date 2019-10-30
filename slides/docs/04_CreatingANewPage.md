@@ -11,15 +11,9 @@ We are using CWP here to demonstrate how to use a collection of modules to solve
 
 ## Reset your theme to Watea
 We're going to continue our lesson using the CWP module. Let's switch back to using the Watea theme:
-
-```
-    composer require cwp/watea-theme ^2
-    composer require cwp/agency-extensions ^2
-```
-
-
-## Reset your theme to Watea
+<small class="w-100">
 app/_config/theme.yml
+<br/>
 ```
 ---
 Name: cwptheme
@@ -31,6 +25,7 @@ SilverStripe\View\SSViewer:
     - 'starter'
     - '$default'
 ```
+</small>
 
 
 ## Existing page types
@@ -94,7 +89,7 @@ SilverStripe\View\SSViewer:
 
 ### Creating the landing page
 
-* _app/src/PageType/LandingPage.php_
+* _app/src/PageTypes/LandingPage.php_
 
 ```php
 class LandingPage extends Page {
@@ -105,7 +100,7 @@ class LandingPage extends Page {
 
 You will also need to create your controller
 
-* _app/src/Controller/LandingPageController.php_
+* _app/src/Controllers/LandingPageController.php_
 
 ```php
 class LandingPageController extends PageController {
@@ -203,7 +198,7 @@ private static $description = 'For each main section of the website';
 ![Landing Page Description](docs/img/04_add-landing-page.png "Landing page description")
 
 * You have just created your very first page type.
-* But wait... that's only a model and a controller! Where's the view?  More on that soon...
+* But wait... that's only a model and a controller! Where's does the view come from?  More on that soon...
 
 
 ## ORM
@@ -234,6 +229,7 @@ The ORM is an incredibly powerful tool that you can use to query just about anyt
 
 
 ### How to use the ORM
+<small>See examples in Page.php</small>
 ```php
 //fetch a list of all homepage objects, and return the first one
 $homepage = HomePage::get()->first(); 
@@ -253,6 +249,7 @@ Page::get()
 
 
 ### How to use the ORM (continued)
+<small>See examples in Page.php</small>
 ```php
 //get page with ID#12
 Page::get()->byID(12);
@@ -341,7 +338,7 @@ The task compares the current database to the classes defined in code and will p
   + Altering the HTML structure in an existing template file
   + JavaScript or CSS changes
 
-* A simple refresh of the page should be sufficient in these cases, when there are JS or CSS changes a hard refresh (CTL-F5) might be needed.
+* A simple refresh of the page should be sufficient in these cases, when there are JS or CSS changes a hard refresh (CTRL-F5) might be needed.
 
 
 ## Table structure in the SilverStripe database
@@ -436,6 +433,7 @@ This variable defines the icon that appears in the CMS Site Tree. If ignored, th
 #### $hide_ancestor
 * For example, if you don't want users to ever publish a VirtualPage, you can set the following on your app/_config/config.yml file without making any changes at all to the CMS module:
 
+<small>_uncomment these lines in config.yml then run a ?flush= command_</small>
 ```yml
 SilverStripe\CMS\Model\VirtualPage:
   hide_ancestor: 'SilverStripe\CMS\Model\VirtualPage'
@@ -604,7 +602,6 @@ $account = SharedBankAccount::get()
         'AccountID' => $accountID,
         'OwnerID' => $member->ID
     ])->first();
-var_dump($account->VerifiedDate);
 ```
 
 
@@ -616,6 +613,12 @@ Verified $Join.VerifiedDate.Ago
 <% end_loop%>
 ```
 It is not possible to do this with many_many_extraFields.
+
+
+##### $many_many through: a final word
+The feature is still new and frankly experimental. The documentation is not the best and some features (onBeforeWrite, gridfields, and scaffolding, to name a few) do not work in the way you'd expect. Avoid using this feature until it's more mature, unless you absolutely need it. The same result could probably be achieved with multiple `has_many` and `has_one` relationships
+
+This SharedBankAccount example has been provided in the sample code.
 
 
 ## What is a DataObject?
@@ -637,6 +640,8 @@ All pagetypes are extended from DataObject - it is the source of common fields s
 
 ### What is a DataObject?
 The same system of "inheritance" can apply to Dataobjects as well, where if you have a child class of a dataobject you created, a child table will only contain the new fields.
+
+Public methods defined on a parent (such as a parent page) are automatically made available to the children. See Page.php for some examples of this.
 
 
 ### What is a DataObject?

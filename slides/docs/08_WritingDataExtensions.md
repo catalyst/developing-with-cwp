@@ -30,7 +30,7 @@ An extension is a PHP class that "decorates" the classes in other modules with a
 ### Using a DataExtension to add new methods
 We'll add a new action that is accessible to all published userforms
 
-Add the following file to app/Extension/KiaOra.php
+Add the following file to app/Extensions/KiaOra.php
 ```php
 use SilverStripe\ORM\DataExtension;
 class KiaOraExtension extends DataExtension
@@ -90,9 +90,10 @@ We'll write an extension to add a CopyrightStatement field to the SiteConfig, wh
 
 
 ### Adding new Database columns and fields
-Create app/Extension/SiteConfigExtension.php:
+Create app/Extensions/SiteConfigExtension.php:
 <small class="w-100">
 ```php
+use SilverStripe\Forms\FieldList;
 use SilverStripe\ORM\DataExtension;
 use SilverStripe\Forms\TextField;
 class SiteConfigExtension extends DataExtension
@@ -100,7 +101,7 @@ class SiteConfigExtension extends DataExtension
     private static $db = [
         'CopyrightStatement' => 'Varchar(80)'
     ];
-    public function updateCMSFields($fields)
+    public function updateCMSFields(FieldList $fields)
     {
         $fields->addFieldToTab(
             'Root.Main',
@@ -110,21 +111,24 @@ class SiteConfigExtension extends DataExtension
 
     public function DisplayCopyright()
     {
-        return $this->owner->Title . $this->owner->CopyrightStatement;
+        return $this->owner->Title . ' ' .$this->owner->CopyrightStatement;
     }
 }
+
     ```
 </small>
 
 ### Adding new Database columns and fields
 
-Add the following to app/_config/config.yml
+Add the following to app/_config/config.yml and run `/dev/build?flush=`
 
 ```yml
 SilverStripe\SiteConfig\SiteConfig:
   extensions:
     - 'SiteConfigExtension'
 ```
+
+Visit the Settings area of the CMS to see your new fields
 
 * Extensions are so commonly used, developers will often place all extensions in their project in their own _extensions.yml_ file. This is completely optional
 
@@ -138,7 +142,7 @@ Note the use of `$this->owner` to refer to the database fields instead of `$this
 
 
 ### Adding new Database columns and fields
-The `DisplayCopyright()` method is added to the SiteConfig object, which means its also accessible through the template.  Add the line `$Top.SiteConfig.DisplayCopyright` anywhere in one of your templates to see this in action.
+The `DisplayCopyright()` method is added to the SiteConfig object, which means its also accessible through the template.  Add the line `$Top.SiteConfig.DisplayCopyright` somewhere sensible (like Footer.ss) to see this in action.
 
 
 ## What we've learned

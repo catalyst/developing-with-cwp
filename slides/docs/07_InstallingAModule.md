@@ -18,7 +18,11 @@ In this section, we will detail how to create a new module, and load it with Dat
     + SilverStripe itself is a group of modules, and CWP exists because of community-created modules.
 
 
-## Folder structure
+### Location
+SilverStripe Modules are typically located at `vendor/author/modulename`. However, for legacy reasons, they can also be hosted in the base directory. This is useful for "self-hosting" your modules, which we will do here. 
+
+
+### Folder structure
 A module is simply a folder with a particular set of files:
 
 ```
@@ -112,7 +116,7 @@ At a minimum, you should provide the "name" and "type" keys. The `name` key is w
 
 
 #### vendor-expose
-If any part of your module is publicly accessible (i.e. you've written a Javascript app with a CSS stylesheet and some icons), you'll need to "expose" those directories. You can do this with the `extra` key:
+If any part of your module is publicly accessible (i.e. you've written a Javascript app with a CSS stylesheet and some icons), you'll need to "expose" those directories. You can do this with the `extra` key in your composer.json file:
 
 ```js
 "extra": {
@@ -159,19 +163,25 @@ The best way is to ensure your project is pushed to your remote version control 
 
 ## Great - let's build something!
 
-We're going to make a new module called yourname/email-management
+We're going to make a new module called email-management. I've actually published this module on Github already - this is to show you how I built it.
 
-Create the following files:
+https://github.com/elliot-sawyer/managed-emails
+
+## Let's build something!
+
+Create an email-management folder with the following files in your base directory:
+<small class="w-100">
 ```
-    mkdir -p yourname/email-management/_config
-    mkdir -p yourname/email-management/src/Admin
-    mkdir -p yourname/email-management/src/Model
-    touch yourname/email-management/_config.php
-    touch yourname/email-management/_config/config.yml
-    touch yourname/email-management/src/Admin/EmailManagementAdmin.php
-    touch yourname/email-management/src/Model/ManagedEmail.php
-    touch yourname/email-management/composer.json
+    mkdir -p email-management/_config
+    mkdir -p email-management/src/Admin
+    mkdir -p email-management/src/Model
+    touch email-management/_config.php
+    touch email-management/_config/config.yml
+    touch email-management/src/Admin/ManagedEmailAdmin.php
+    touch email-management/src/Model/ManagedEmail.php
+    touch email-management/composer.json
 ```
+</small>
 
 
 ### back to composer.json
@@ -197,40 +207,8 @@ config.php (note the newline character after the `<?php ` tag)
 //newline is here
 ```
 
-
-### Publish your module
-1. Initialise a new git repo `git init` and do an initial commit `git add .; git commit -m 'initial commit'`
-2. Create a new remote repository on github or similar, make note of the clone URL.
-3. Add a new remote to your newly initialised repo: `git remote add origin <yourcloneurl>`
-4. Force push your new repo to it `git push -u origin master`
-
-
-### Publish your module
-5. Update the composer.json file in your parent repository to include this new repo:
-
-```js
-    "require": {
-        "yourname/email-management":"dev-master as 0.0.1"
-    },
-    "repositories": [
-        {
-            "type": "vcs",
-            "url": "yourcloneurl"
-        }
-    ]
-```
-
-
-### Publish your module
-6. Run `composer update`. You should see your new module pulled into the project.
-
-
-### Troubleshooting
-If you're having trouble with this step, or are unable to commit to a remote repository, don't worry too much about it. We can continue by creating our code in `app` instead.
-
-
 ### Moving on!
-Congratulations: you've now built and published a new module, and included it in your CWP website. Let's add some stuff to make it useful.
+Congratulations: you've now built a new module, and included it in your website. Let's add some stuff to make it useful.
 
 
 ### The Managed Email DataObject
@@ -319,6 +297,7 @@ ModelAdmins are dead simple to create. Create a new file src/Admin/ManagedEmailA
 ```php
 namespace YourName\ManagedEmails;
 use SilverStripe\Admin\ModelAdmin;
+use YourName\ManagedEmails\ManagedEmail;
 class ManagedEmailAdmin extends ModelAdmin {
     private static $menu_title = 'Managed emails';
     private static $url_segment = 'managed-emails';
@@ -330,7 +309,7 @@ class ManagedEmailAdmin extends ModelAdmin {
 
 
 ### ModelAdmin
-* That's it!  These three fields are all that's required to add a new admin area to the CMS, with a new tab and a GridField for managing your models. 
+* That's it!  These three variables are all that's required to add a new admin area to the CMS, with a new tab and a GridField for managing your models. 
 * You can create, retrieve, update, and delete any of your ManagedEmail records. 
 * You can even import and export existing records to and from a CSV
     + search for email
@@ -339,7 +318,7 @@ class ManagedEmailAdmin extends ModelAdmin {
 
 
 ### ModelAdmin
-You may have noticed that the `$managed_models` variable is an array. You can add any number of models to administer in this area, including those from other modules. A new tab will be created for each one.
+You may have noticed that the `$managed_models` variable is an array. You can add any number of models to administer in this area, including those from other modules. They can also be added via YML using the Config API. A new tab will be created for each model in the array.
 
 
 ### Summary

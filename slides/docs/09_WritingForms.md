@@ -67,7 +67,7 @@ This SilverStripe docs page explains $allowed_actions https://docs.silverstripe.
 Example:
 ```php
 private static $allowed_actions = [
-    'BookingEnquiryForm'
+    'EnquiryForm'
 ];
 ```
 
@@ -92,11 +92,7 @@ In practise creating our Enquiry from looks like this, add this to the LandingPa
 
 <small class="w-100">
 ```php
-use SilverStripe\Forms\EmailField;
-use SilverStripe\Forms\TextareaField;
-use SilverStripe\Forms\FormAction;
-use SilverStripe\Forms\RequiredFields;
-use SilverStripe\Forms\Form;
+use SilverStripe\Forms\{EmailField, TextareaField, FormAction, RequiredFields, Form, FieldList, TextField};
 public function EnquiryForm()
 {
     // Create the fields to go on the form.
@@ -157,7 +153,7 @@ Save, dev build and load one of your landing pages in the front-end of the site.
 
 As well as a function which creates the form, we need a function to do something with the information posted on the form. We will be emailing the submission to someone using the module we created earlier. Other users might include saving the details in the database. We have not created this function yet, but did specify a doEnquiryForm function when we defined the action earlier.
 
-Please add this code to the LandingPageContoller below the EnquiryForm() function...
+Please add this code to the LandingPageController below the EnquiryForm() function...
 
 
 ### Function to process the form
@@ -207,7 +203,7 @@ if($email && $email->ID) {
 
 
 ### Processing submitted form data
-Save, /dev/build and try the form out. See if you get emails when the form is submitted, it might take a few minutes to come through.
+Save, /dev/build?flush= and try the form out. See if you get emails when the form is submitted, it might take a few minutes to come through.
 
 
 ### If emailing does not work
