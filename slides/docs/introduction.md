@@ -3,11 +3,21 @@
 Presented by <!-- .element: class="small-text" --> [Elliot Sawyer](mailto:elliotsawyer@catalyst.net.nz) <!-- .element: class="small-text" -->
 
 
-## Slides URL:
+## Helpful links:
 
-<img src='https://chart.googleapis.com/chart?cht=qr&chl=https%3A%2F%2Fgithub.com%2Fcatalyst%2Fdeveloping-with-cwp%2Ftree%2F2019-october-31&chs=360x360&choe=UTF-8&chld=L|2' rel='nofollow' alt='qr code'>
-<hr/>
-https://github.com/catalyst/developing-with-cwp/tree/2019-october-31
+<div class="container">
+<div class="row">
+<div class="col-6">
+Slides<hr/>
+<img src='https://chart.googleapis.com/chart?cht=qr&chl=https%3A%2F%2Fgithub.com%2Fcatalyst%2Fdeveloping-with-cwp%2Ftree%2F2019-october-31&chs=360x360&choe=UTF-8&chld=L|2' rel='nofollow' alt='developer course slides (QR)'>
+<small>https://github.com/catalyst/developing-with-cwp/tree/2019-october-31</small>
+</div>
+
+<div class="col-6">
+Sample code<hr/>
+<img src='https://chart.googleapis.com/chart?cht=qr&chl=https%3A%2F%2Fgithub.com%2Fcatalyst%2Fsilverstripe-developer-course-sample-code%2Ftree%2F2019-october-31&chs=360x360&choe=UTF-8&chld=L|2' alt='developer course sample code (QR)'>
+<small>https://github.com/catalyst/silverstripe-developer-course-sample-code/tree/2019-october-31</small>
+</div>
 
 
 ### About the trainer
